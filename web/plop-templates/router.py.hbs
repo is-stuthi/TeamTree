@@ -1,0 +1,14 @@
+"""{{titleCase name}} endpoints. SQL lives in app/queries/{{snakeCase name}}.py."""
+from fastapi import APIRouter, Depends
+
+from app import db
+from app.auth import CurrentUser, current_user
+from app.models.{{snakeCase name}} import {{pascalCase name}}Out
+from app.queries import {{snakeCase name}} as q
+
+router = APIRouter(prefix="/{{dashCase name}}", tags=["{{snakeCase name}}"])
+
+
+@router.get("", response_model=list[{{pascalCase name}}Out])
+async def list_{{snakeCase name}}(user: CurrentUser = Depends(current_user)):
+    return await db.fetch_all(q.LIST)

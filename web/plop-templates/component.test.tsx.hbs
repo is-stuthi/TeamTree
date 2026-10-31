@@ -1,0 +1,10 @@
+import { render, screen } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
+import { {{pascalCase name}} } from "./{{pascalCase name}}";
+
+describe("{{pascalCase name}}", () => {
+  it("renders its title", () => {
+    render(<{{pascalCase name}} title="Hello" />);
+    expect(screen.getByText("Hello")).toBeTruthy();
+  });
+});

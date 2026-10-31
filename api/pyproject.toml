@@ -1,0 +1,33 @@
+[project]
+name = "teamtree-api"
+version = "0.1.0"
+description = "TeamTREE backend: FastAPI over MySQL (procedures/views) and Neo4j (graph + vector)"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "aiomysql>=0.2",
+    "PyMySQL>=1.1",
+    "cryptography>=42",
+    "neo4j>=5.20",
+    "bcrypt>=4.1",
+    "pyjwt>=2.9",
+    "pydantic-settings>=2.4",
+    "email-validator>=2.1",
+]
+
+[project.optional-dependencies]
+graph = ["sentence-transformers>=3.0"]   # installed in P6 (embeddings)
+dev = ["pytest>=8", "pytest-asyncio>=0.24", "httpx>=0.27"]
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]

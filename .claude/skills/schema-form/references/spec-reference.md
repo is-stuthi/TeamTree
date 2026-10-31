@@ -38,5 +38,7 @@ Path params such as `{p_id}` are filled from the `params` prop of `<SchemaForm>`
 | `pie` | `title`, `source`, `path` (object of label → count) | `span` |
 | `table` | `title`, `source`, `columns[]` | `pageSize`, `span` |
 | `progress` | `title`, `source`, `value`, `max` | `span` |
+| `line` | `title`, `source`, `x`, `y` | `span` (e.g., Q9 applications per day) |
+| `graph` | `title`, `source` (returns `{nodes, edges}`) | `height`, `span` (Neo4j network, client-only) |
 
 `source` may contain `{id}`; it is filled from the dashboard's `params` prop. `path` is dot-notation into the response.

@@ -1,0 +1,18 @@
+{{#if client}}"use client";
+
+{{/if}}import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+export interface {{pascalCase name}}Props {
+  title: string;
+}
+
+export function {{pascalCase name}}({ title }: {{pascalCase name}}Props) {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>{title}</CardTitle>
+      </CardHeader>
+      <CardContent />
+    </Card>
+  );
+}
