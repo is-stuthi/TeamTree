@@ -128,3 +128,34 @@
     @apply font-sans;
   }
 }
+/* ---------- Data-viz tokens (dataviz skill reference palette) ----------
+   Charts reference roles, never raw hex. Dark values are their own validated
+   steps, not an automatic flip. next-themes toggles the `.dark` class. */
+.viz-root {
+  --viz-surface: #fcfcfb;
+  --viz-ink: #0b0b0b;
+  --viz-ink-2: #52514e;
+  --viz-muted: #898781;
+  --viz-grid: #e1e0d9;
+  --viz-track: #cde2fb;          /* sequential blue 100: meter track */
+  --viz-fill: #2a78d6;           /* sequential blue 450: meter fill / series 1 */
+  --viz-series-1: #2a78d6;
+  --viz-series-2: #eb6834;
+  --viz-series-3: #1baf7a;
+  --viz-status-good: #0ca30c;
+  --viz-status-critical: #d03b3b;
+}
+.dark .viz-root {
+  --viz-surface: #1a1a19;
+  --viz-ink: #f0efec;
+  --viz-ink-2: #c3c2b7;
+  --viz-muted: #898781;
+  --viz-grid: #2c2c2a;
+  --viz-track: #184f95;          /* sequential blue 600: darkest step that still clears 2:1 on dark */
+  --viz-fill: #3987e5;
+  --viz-series-1: #3987e5;
+  --viz-series-2: #d95926;
+  --viz-series-3: #199e70;
+  --viz-status-good: #0ca30c;
+  --viz-status-critical: #d03b3b;
+}

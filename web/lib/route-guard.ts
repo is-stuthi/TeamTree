@@ -6,6 +6,7 @@ const PROTECTED = [
   /^\/dashboard(\/|$)/,
   /^\/admin(\/|$)/,
   /^\/graph(\/|$)/,
+  /^\/users(\/|$)/,
   /^\/analytics(\/|$)/,
   /^\/projects\/[^/]+\/manage(\/|$)/,
 ];
@@ -21,7 +22,9 @@ export function guard(pathname: string, session: Session | null): string | null 
   return null;
 }
 
-/** Only allow same-site relative redirects after login. */
+/** Only allow same-site relative redirects after login. Browsers treat "\" like "/",
+ *  so "/\evil.com" would become "//evil.com"; any backslash is rejected. */
 export function safeNext(next: string | undefined, fallback = "/dashboard"): string {
-  return next && next.startsWith("/") && !next.startsWith("//") ? next : fallback;
+  if (!next || !next.startsWith("/") || next.startsWith("//") || next.includes("\\")) return fallback;
+  return next;
 }

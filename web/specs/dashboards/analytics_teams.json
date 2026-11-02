@@ -1,0 +1,22 @@
+{
+  "title": "Teams",
+  "description": "Team sizes, roles and task progress (TaskProgressSummary view).",
+  "grid": { "cols": 3 },
+  "widgets": [
+    { "type": "stat", "title": "Average team size", "help": "Open and ongoing projects", "source": "/analytics/teams", "path": "avg_team_size" },
+    { "type": "bars", "title": "Largest teams", "source": "/analytics/teams", "path": "largest",
+      "label": "p_name", "series": [{ "key": "team_size", "label": "Members" }], "span": 2 },
+    { "type": "bars", "title": "Roles across active teams", "source": "/analytics/teams", "path": "roles",
+      "label": "role", "series": [{ "key": "n", "label": "Members" }] },
+    { "type": "table", "title": "Task progress", "source": "/analytics/teams", "path": "task_progress", "span": 2,
+      "columns": [
+        { "key": "p_name", "label": "Project" },
+        { "key": "total_tasks", "label": "Tasks", "align": "right" },
+        { "key": "done", "label": "Done", "align": "right" },
+        { "key": "in_progress", "label": "In progress", "align": "right" },
+        { "key": "blocked", "label": "Blocked", "align": "right" },
+        { "key": "pct_done", "label": "% done", "align": "right" },
+        { "key": "overdue_tasks", "label": "Overdue", "align": "right" }
+      ] }
+  ]
+}

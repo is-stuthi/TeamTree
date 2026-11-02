@@ -34,6 +34,8 @@ describe("safeNext", () => {
     expect(safeNext("/dashboard/skills")).toBe("/dashboard/skills");
     expect(safeNext("https://evil.example")).toBe("/dashboard");
     expect(safeNext("//evil.example")).toBe("/dashboard");
+    expect(safeNext("/\\evil.example")).toBe("/dashboard");
+    expect(safeNext("/projects\\..\\x")).toBe("/dashboard");
     expect(safeNext(undefined)).toBe("/dashboard");
   });
 });

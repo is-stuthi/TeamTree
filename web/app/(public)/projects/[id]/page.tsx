@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { ProjectActions } from "@/components/app/ProjectActions";
+import { SimilarProjects } from "@/components/app/SimilarProjects";
 import { RequirementsTable } from "@/components/app/RequirementsTable";
 import { OverdueBadge, StatusBadge } from "@/components/app/StatusBadge";
 import { Badge } from "@/components/ui/badge";
@@ -40,7 +41,8 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
             <CardContent><RequirementsTable requirements={p.requirements} /></CardContent>
           </Card>
         </div>
-        <Card className="self-start">
+        <div className="space-y-6">
+        <Card>
           <CardHeader><CardTitle>Details</CardTitle></CardHeader>
           <CardContent className="grid gap-3 text-sm">
             <Detail label="Owner" value={p.owner_name} sub={p.owner_bio} />
@@ -49,6 +51,8 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
             <Detail label="Created" value={new Date(p.creation_date).toLocaleDateString()} />
           </CardContent>
         </Card>
+        <SimilarProjects projectId={p.p_id} />
+        </div>
       </div>
     </main>
   );

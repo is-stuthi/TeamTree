@@ -143,6 +143,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/users/{user_id}/skills": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** User Skills */
+        get: operations["user_skills_users__user_id__skills_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/users/{user_id}": {
         parameters: {
             query?: never;
@@ -524,6 +541,590 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/projects/{p_id}/team": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Team */
+        get: operations["team_projects__p_id__team_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/projects/{p_id}/team/top-contributors": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Top Contributors */
+        get: operations["top_contributors_projects__p_id__team_top_contributors_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/projects/{p_id}/team/{user_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Remove Member */
+        delete: operations["remove_member_projects__p_id__team__user_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/projects/{p_id}/team/leave": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Leave */
+        post: operations["leave_projects__p_id__team_leave_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/projects/{p_id}/transfer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Transfer */
+        post: operations["transfer_projects__p_id__transfer_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/teams": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My Teams */
+        get: operations["my_teams_users_me_teams_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/projects/{p_id}/tasks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Tasks */
+        get: operations["list_tasks_projects__p_id__tasks_get"];
+        put?: never;
+        /** Create Task */
+        post: operations["create_task_projects__p_id__tasks_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/projects/{p_id}/tasks/tree": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Task Tree */
+        get: operations["task_tree_projects__p_id__tasks_tree_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/tasks/{task_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update Task */
+        patch: operations["update_task_tasks__task_id__patch"];
+        trace?: never;
+    };
+    "/tasks/{task_id}/assign": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Assign */
+        post: operations["assign_tasks__task_id__assign_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/tasks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My Tasks */
+        get: operations["my_tasks_users_me_tasks_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/projects/{p_id}/candidates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Candidates */
+        get: operations["candidates_projects__p_id__candidates_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/projects/{p_id}/skill-gap": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Skill Gap */
+        get: operations["skill_gap_projects__p_id__skill_gap_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/graph/users/{uid}/network": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Network */
+        get: operations["network_graph_users__uid__network_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/graph/users/{uid}/recommended-collaborators": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Recommended */
+        get: operations["recommended_graph_users__uid__recommended_collaborators_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/graph/path": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Path */
+        get: operations["path_graph_path_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/graph/skills/{sid}/related": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Related */
+        get: operations["related_graph_skills__sid__related_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/graph/skill-relations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Relations */
+        get: operations["relations_graph_skill_relations_get"];
+        put?: never;
+        /**
+         * Relate Form
+         * @description Form-friendly variant of PUT /graph/skills/{a}/related/{b}.
+         */
+        post: operations["relate_form_graph_skill_relations_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/graph/projects/{pid}/gap-candidates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Gap Candidates */
+        get: operations["gap_candidates_graph_projects__pid__gap_candidates_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/graph/search/projects": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Search Projects */
+        get: operations["search_projects_graph_search_projects_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/graph/projects/{pid}/similar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Similar Projects */
+        get: operations["similar_projects_graph_projects__pid__similar_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/graph/users/{uid}/similar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Similar Users */
+        get: operations["similar_users_graph_users__uid__similar_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/graph/users/{uid}/endorsements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Endorsements */
+        get: operations["endorsements_graph_users__uid__endorsements_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/graph/endorsements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Endorse */
+        put: operations["endorse_graph_endorsements_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/graph/endorsements/{to}/{skill_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Unendorse */
+        delete: operations["unendorse_graph_endorsements__to___skill_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/graph/skills/{a}/related/{b}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Relate */
+        put: operations["relate_graph_skills__a__related__b__put"];
+        post?: never;
+        /** Unrelate */
+        delete: operations["unrelate_graph_skills__a__related__b__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/graph/projects/{pid}/reembed": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reembed */
+        post: operations["reembed_graph_projects__pid__reembed_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/analytics/skills": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Skills */
+        get: operations["skills_analytics_skills_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/analytics/projects": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Projects */
+        get: operations["projects_analytics_projects_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/analytics/applications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Applications */
+        get: operations["applications_analytics_applications_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/analytics/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Users */
+        get: operations["users_analytics_users_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/analytics/teams": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Teams */
+        get: operations["teams_analytics_teams_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/activity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My Activity */
+        get: operations["my_activity_users_me_activity_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/public/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Public Stats */
+        get: operations["public_stats_public_stats_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/health": {
         parameters: {
             query?: never;
@@ -600,6 +1201,55 @@ export interface components {
             /** Decision Date */
             decision_date?: string | null;
         };
+        /** AssignIn */
+        AssignIn: {
+            /** Assignee */
+            u_id?: number | null;
+        };
+        /** Breakdown */
+        Breakdown: {
+            /** Coverage */
+            coverage: number;
+            /** Proficiency */
+            proficiency: number;
+            /** Experience */
+            experience: number;
+            /** Domain */
+            domain: number;
+            /** Availability */
+            availability: number;
+        };
+        /** CandidateOut */
+        CandidateOut: {
+            /** U Id */
+            u_id: number;
+            /** Name */
+            name: string;
+            /**
+             * Experience Level
+             * @enum {string}
+             */
+            experience_level: "Beginner" | "Intermediate" | "Advanced" | "Expert";
+            /**
+             * Availability
+             * @enum {string}
+             */
+            availability: "Full-time" | "Part-time" | "Weekends" | "Unavailable";
+            /** Score */
+            score: number;
+            breakdown: components["schemas"]["Breakdown"];
+            /** Missing Skills */
+            missing_skills: string[];
+            /** Fully Qualified */
+            fully_qualified: boolean;
+        };
+        /** ConnectionPath */
+        ConnectionPath: {
+            /** Path */
+            path: components["schemas"]["PathNode"][];
+            /** Hops */
+            hops: number | null;
+        };
         /** Decision */
         Decision: {
             /**
@@ -609,6 +1259,32 @@ export interface components {
             decision: "Accepted" | "Rejected";
             /** Role in the team */
             role?: string | null;
+        };
+        /** EndorseIn */
+        EndorseIn: {
+            /** Endorse */
+            to: number;
+            /** Skill */
+            skill_id: number;
+            /** Strength (1-5) */
+            weight: number;
+            /** Note */
+            note?: string | null;
+        };
+        /** EndorsementSummary */
+        EndorsementSummary: {
+            /** Skill Id */
+            skill_id: number;
+            /** Skill */
+            skill: string;
+            /** Count */
+            count: number;
+            /** Avg Weight */
+            avg_weight: number;
+            /** Endorsers */
+            endorsers: string[];
+            /** Endorser Ids */
+            endorser_ids: number[];
         };
         /** FieldHint */
         FieldHint: {
@@ -636,6 +1312,39 @@ export interface components {
              * @default false
              */
             hidden: boolean;
+        };
+        /** GapCandidate */
+        GapCandidate: {
+            /** Skill */
+            skill: string;
+            /** User Id */
+            user_id: number;
+            /** Name */
+            name: string;
+            /** Via */
+            via: string;
+            /** Related */
+            related: boolean;
+            /** Endorsements */
+            endorsements: number;
+        };
+        /** GraphEdge */
+        GraphEdge: {
+            /** Source */
+            source: number;
+            /** Target */
+            target: number;
+            /** Shared */
+            shared: number;
+        };
+        /** GraphNode */
+        GraphNode: {
+            /** Id */
+            id: number;
+            /** Name */
+            name: string;
+            /** Degree */
+            degree: number;
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -708,6 +1417,68 @@ export interface components {
             /** Is Owner */
             is_owner: boolean;
         };
+        /** MyTask */
+        MyTask: {
+            /** Task Id */
+            task_id: number;
+            /** P Id */
+            p_id: number;
+            /** U Id */
+            u_id?: number | null;
+            /** Assignee Name */
+            assignee_name?: string | null;
+            /** Parent Task Id */
+            parent_task_id?: number | null;
+            /** T Name */
+            t_name: string;
+            /** Description */
+            description?: string | null;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "To Do" | "In Progress" | "Done" | "Blocked";
+            /**
+             * Priority
+             * @enum {string}
+             */
+            priority: "Low" | "Medium" | "High" | "Critical";
+            /** Due Date */
+            due_date?: string | null;
+            /** Is Overdue */
+            is_overdue: boolean;
+            /** P Name */
+            p_name: string;
+        };
+        /** MyTeam */
+        MyTeam: {
+            /** P Id */
+            p_id: number;
+            /** P Name */
+            p_name: string;
+            /** Team Name */
+            team_name: string;
+            /** Status */
+            status: string;
+            /** Role */
+            role: string;
+            /**
+             * Join Date
+             * Format: date
+             */
+            join_date: string;
+            /** Is Owner */
+            is_owner: boolean;
+            /** Team Size */
+            team_size: number;
+        };
+        /** Network */
+        Network: {
+            /** Nodes */
+            nodes: components["schemas"]["GraphNode"][];
+            /** Edges */
+            edges: components["schemas"]["GraphEdge"][];
+        };
         /** PasswordChange */
         PasswordChange: {
             /**
@@ -720,6 +1491,13 @@ export interface components {
              * Format: password
              */
             new_password: string;
+        };
+        /** PathNode */
+        PathNode: {
+            /** Id */
+            id: number;
+            /** Name */
+            name: string;
         };
         /**
          * ProfilePatch
@@ -913,6 +1691,19 @@ export interface components {
             /** Total Requirements */
             total_requirements: number;
         };
+        /** RecommendedCollaborator */
+        RecommendedCollaborator: {
+            /** Id */
+            id: number;
+            /** Name */
+            name: string;
+            /** Mutual */
+            mutual: number;
+            /** Complementary Skills */
+            complementary_skills: string[];
+            /** Endorsement Score */
+            endorsement_score: number;
+        };
         /** RecommendedProject */
         RecommendedProject: {
             /** P Id */
@@ -972,6 +1763,33 @@ export interface components {
              */
             password: string;
         };
+        /** RelatedSkill */
+        RelatedSkill: {
+            /** Id */
+            id: number;
+            /** Name */
+            name: string;
+            /** Weight */
+            weight?: number | null;
+            /** Together */
+            together?: number | null;
+        };
+        /** RelatedSkills */
+        RelatedSkills: {
+            /** Curated */
+            curated: components["schemas"]["RelatedSkill"][];
+            /** Co Occurring */
+            co_occurring: components["schemas"]["RelatedSkill"][];
+        };
+        /** RelationIn */
+        RelationIn: {
+            /** Skill */
+            a: number;
+            /** Related skill */
+            b: number;
+            /** Strength (0-1) */
+            weight: number;
+        };
         /** RequirementCopy */
         RequirementCopy: {
             /** Copy from project */
@@ -1023,6 +1841,15 @@ export interface components {
              */
             role: "admin" | "member";
         };
+        /** SimilarItem */
+        SimilarItem: {
+            /** Id */
+            id: number;
+            /** Name */
+            name: string;
+            /** Score */
+            score: number;
+        };
         /** SkillBrief */
         SkillBrief: {
             /** S Name */
@@ -1039,6 +1866,28 @@ export interface components {
             s_name: string;
             /** Category */
             category?: string | null;
+        };
+        /** SkillGapRow */
+        SkillGapRow: {
+            /** S Id */
+            s_id: number;
+            /** S Name */
+            s_name: string;
+            /** Req Role */
+            req_role: string;
+            /**
+             * Required Level
+             * @enum {string}
+             */
+            required_level: "Beginner" | "Intermediate" | "Advanced" | "Expert";
+            /** Req Count */
+            req_count: number;
+            /** Members With Skill */
+            members_with_skill: number;
+            /** Qualified Members */
+            qualified_members: number;
+            /** Shortfall */
+            shortfall: number;
         };
         /** SkillLevelIn */
         SkillLevelIn: {
@@ -1071,6 +1920,19 @@ export interface components {
             /** Category */
             category?: string | null;
         };
+        /** SkillRelation */
+        SkillRelation: {
+            /** A */
+            a: number;
+            /** A Name */
+            a_name: string;
+            /** B */
+            b: number;
+            /** B Name */
+            b_name: string;
+            /** Weight */
+            weight: number;
+        };
         /** Submit */
         Submit: {
             /**
@@ -1084,6 +1946,134 @@ export interface components {
              */
             path: string;
         };
+        /** TaskCreate */
+        TaskCreate: {
+            /** Task */
+            t_name: string;
+            /** Description */
+            description?: string | null;
+            /**
+             * Priority
+             * @default Medium
+             * @enum {string}
+             */
+            priority: "Low" | "Medium" | "High" | "Critical";
+            /** Due date */
+            due_date?: string | null;
+            /** Assignee */
+            u_id?: number | null;
+            /** Parent task */
+            parent_task_id?: number | null;
+        };
+        /** TaskNode */
+        TaskNode: {
+            /** Task Id */
+            task_id: number;
+            /** P Id */
+            p_id: number;
+            /** U Id */
+            u_id?: number | null;
+            /** Assignee Name */
+            assignee_name?: string | null;
+            /** Parent Task Id */
+            parent_task_id?: number | null;
+            /** T Name */
+            t_name: string;
+            /** Description */
+            description?: string | null;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "To Do" | "In Progress" | "Done" | "Blocked";
+            /**
+             * Priority
+             * @enum {string}
+             */
+            priority: "Low" | "Medium" | "High" | "Critical";
+            /** Due Date */
+            due_date?: string | null;
+            /** Is Overdue */
+            is_overdue: boolean;
+            /** Depth */
+            depth: number;
+            /** Path */
+            path: string;
+        };
+        /** TaskOut */
+        TaskOut: {
+            /** Task Id */
+            task_id: number;
+            /** P Id */
+            p_id: number;
+            /** U Id */
+            u_id?: number | null;
+            /** Assignee Name */
+            assignee_name?: string | null;
+            /** Parent Task Id */
+            parent_task_id?: number | null;
+            /** T Name */
+            t_name: string;
+            /** Description */
+            description?: string | null;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "To Do" | "In Progress" | "Done" | "Blocked";
+            /**
+             * Priority
+             * @enum {string}
+             */
+            priority: "Low" | "Medium" | "High" | "Critical";
+            /** Due Date */
+            due_date?: string | null;
+            /** Is Overdue */
+            is_overdue: boolean;
+        };
+        /**
+         * TaskPatch
+         * @description Only columns tt_app may UPDATE on Task (column-level GRANT).
+         */
+        TaskPatch: {
+            /** Task */
+            t_name?: string | null;
+            /** Description */
+            description?: string | null;
+            /** Status */
+            status?: ("To Do" | "In Progress" | "Done" | "Blocked") | null;
+            /** Priority */
+            priority?: ("Low" | "Medium" | "High" | "Critical") | null;
+            /** Due date */
+            due_date?: string | null;
+        };
+        /** TeamMember */
+        TeamMember: {
+            /** J Id */
+            j_id: number;
+            /** U Id */
+            u_id: number;
+            /** Member Name */
+            member_name: string;
+            /** Email */
+            email: string;
+            /** Role */
+            role: string;
+            /**
+             * Join Date
+             * Format: date
+             */
+            join_date: string;
+            /** Leave Date */
+            leave_date?: string | null;
+            /** Is Active */
+            is_active: boolean;
+            /**
+             * Open Tasks
+             * @default 0
+             */
+            open_tasks: number;
+        };
         /** TokenOut */
         TokenOut: {
             /** Access Token */
@@ -1094,6 +2084,20 @@ export interface components {
              */
             token_type: string;
             user: components["schemas"]["UserMe"];
+        };
+        /** TopContributor */
+        TopContributor: {
+            /** U Id */
+            u_id: number;
+            /** Member Name */
+            member_name: string;
+            /** Done */
+            done: number;
+        };
+        /** TransferIn */
+        TransferIn: {
+            /** New owner */
+            new_owner: number;
         };
         /** UiHints */
         UiHints: {
@@ -1189,6 +2193,8 @@ export interface components {
              * @enum {string}
              */
             availability: "Full-time" | "Part-time" | "Weekends" | "Unavailable";
+            /** Strongest Skill */
+            strongest_skill?: string | null;
             /**
              * Skills
              * @default []
@@ -1236,6 +2242,11 @@ export interface components {
             is_member: boolean;
             /** Pending Application Id */
             pending_application_id?: number | null;
+        };
+        /** WeightIn */
+        WeightIn: {
+            /** Relation strength (0-1) */
+            weight: number;
         };
     };
     responses: never;
@@ -1532,6 +2543,37 @@ export interface operations {
             header?: never;
             path: {
                 s_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserSkillOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    user_skills_users__user_id__skills_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user_id: number;
             };
             cookie?: never;
         };
@@ -2358,6 +3400,1098 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    team_projects__p_id__team_get: {
+        parameters: {
+            query?: {
+                include_past?: boolean;
+            };
+            header?: never;
+            path: {
+                p_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TeamMember"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    top_contributors_projects__p_id__team_top_contributors_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                p_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TopContributor"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    remove_member_projects__p_id__team__user_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                p_id: number;
+                user_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TeamMember"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    leave_projects__p_id__team_leave_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                p_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Message"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    transfer_projects__p_id__transfer_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                p_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TransferIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TeamMember"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    my_teams_users_me_teams_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MyTeam"][];
+                };
+            };
+        };
+    };
+    list_tasks_projects__p_id__tasks_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                p_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_task_projects__p_id__tasks_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                p_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TaskCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    task_tree_projects__p_id__tasks_tree_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                p_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskNode"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_task_tasks__task_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                task_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TaskPatch"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    assign_tasks__task_id__assign_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                task_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AssignIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaskOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    my_tasks_users_me_tasks_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MyTask"][];
+                };
+            };
+        };
+    };
+    candidates_projects__p_id__candidates_get: {
+        parameters: {
+            query?: {
+                full?: boolean;
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                p_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CandidateOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    skill_gap_projects__p_id__skill_gap_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                p_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SkillGapRow"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    network_graph_users__uid__network_get: {
+        parameters: {
+            query?: {
+                depth?: number;
+            };
+            header?: never;
+            path: {
+                uid: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Network"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    recommended_graph_users__uid__recommended_collaborators_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                uid: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RecommendedCollaborator"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    path_graph_path_get: {
+        parameters: {
+            query: {
+                from: number;
+                to: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConnectionPath"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    related_graph_skills__sid__related_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                sid: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RelatedSkills"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    relations_graph_skill_relations_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SkillRelation"][];
+                };
+            };
+        };
+    };
+    relate_form_graph_skill_relations_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RelationIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SkillRelation"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    gap_candidates_graph_projects__pid__gap_candidates_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                pid: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GapCandidate"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    search_projects_graph_search_projects_get: {
+        parameters: {
+            query: {
+                q: string;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SimilarItem"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    similar_projects_graph_projects__pid__similar_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                pid: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SimilarItem"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    similar_users_graph_users__uid__similar_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                uid: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SimilarItem"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    endorsements_graph_users__uid__endorsements_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                uid: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EndorsementSummary"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    endorse_graph_endorsements_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EndorseIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EndorsementSummary"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    unendorse_graph_endorsements__to___skill_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                to: number;
+                skill_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EndorsementSummary"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    relate_graph_skills__a__related__b__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                a: number;
+                b: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WeightIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SkillRelation"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    unrelate_graph_skills__a__related__b__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                a: number;
+                b: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SkillRelation"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    reembed_graph_projects__pid__reembed_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                pid: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Message"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    skills_analytics_skills_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    projects_analytics_projects_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    applications_analytics_applications_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    users_analytics_users_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    teams_analytics_teams_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    my_activity_users_me_activity_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    }[];
+                };
+            };
+        };
+    };
+    public_stats_public_stats_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
                 };
             };
         };

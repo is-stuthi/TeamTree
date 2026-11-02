@@ -1,0 +1,56 @@
+{
+  "title": "Skill gap",
+  "description": "Requirements compared with active team members who meet the required level (SkillGap view).",
+  "grid": { "cols": 3 },
+  "widgets": [
+    {
+      "type": "stat",
+      "title": "People still needed",
+      "source": "/projects/{id}/skill-gap",
+      "agg": "sum",
+      "field": "shortfall",
+      "good_when": "zero"
+    },
+    {
+      "type": "stat",
+      "title": "Requirements fully covered",
+      "source": "/projects/{id}/skill-gap",
+      "agg": "count_where",
+      "field": "shortfall",
+      "equals": 0,
+      "help": "Out of all requirement rows"
+    },
+    {
+      "type": "stat",
+      "title": "Requirement rows",
+      "source": "/projects/{id}/skill-gap",
+      "agg": "count"
+    },
+    {
+      "type": "meters",
+      "title": "Qualified members per requirement",
+      "help": "Members meeting the level, against the number of people needed.",
+      "source": "/projects/{id}/skill-gap",
+      "label": "s_name",
+      "sublabel": "req_role",
+      "value": "qualified_members",
+      "max": "req_count",
+      "span": 3
+    },
+    {
+      "type": "table",
+      "title": "Detail",
+      "source": "/projects/{id}/skill-gap",
+      "span": 3,
+      "columns": [
+        { "key": "s_name", "label": "Skill" },
+        { "key": "req_role", "label": "Role" },
+        { "key": "required_level", "label": "Min. level" },
+        { "key": "req_count", "label": "Needed", "align": "right" },
+        { "key": "members_with_skill", "label": "Have skill", "align": "right" },
+        { "key": "qualified_members", "label": "Qualified", "align": "right" },
+        { "key": "shortfall", "label": "Shortfall", "align": "right" }
+      ]
+    }
+  ]
+}

@@ -74,6 +74,9 @@ async def test_withdraw_rules(client):
 
 
 async def test_concurrent_accepts_cannot_exceed_capacity(client, root_conn):
+    # Happy-path check only: in-process requests usually don't truly overlap, so this
+    # can't detect a stale capacity read. tests/test_concurrency.py forces the
+    # interleaving deterministically and fails if the count is a plain SELECT.
     owner = await login(client, "dev@teamtree.dev")
     p = (await client.post("/projects", headers=owner, json={"p_name": "Race Test", "max_team_size": 2})).json()
     a1 = (await _apply(client, "esha@teamtree.dev", p["p_id"])).json()["a_id"]

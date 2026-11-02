@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { SchemaForm } from "@/components/schema/SchemaForm";
+import { SkillRelations } from "@/components/app/SkillRelations";
 import { getSpec, serverApi } from "@/lib/api/server";
 
 export const metadata = { title: "Skill catalogue · TeamTREE" };
@@ -11,6 +12,7 @@ export default async function AdminSkillsPage() {
   const [{ data: skills = [] }, spec] = await Promise.all([api.GET("/skills"), getSpec("skill_admin")]);
 
   return (
+    <div className="space-y-6">
     <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
       <Card>
         <CardHeader>
@@ -38,6 +40,8 @@ export default async function AdminSkillsPage() {
         <CardHeader><CardTitle>{spec.title}</CardTitle></CardHeader>
         <CardContent><SchemaForm spec={spec} resetOnSuccess /></CardContent>
       </Card>
+    </div>
+    <SkillRelations />
     </div>
   );
 }

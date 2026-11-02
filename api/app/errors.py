@@ -9,6 +9,9 @@ import re
 import pymysql
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
+from neo4j.exceptions import ServiceUnavailable, SessionExpired
+
+Neo4jUnavailable = (ServiceUnavailable, SessionExpired)
 
 SIGNAL_STATUS: dict[str, int] = {
     # 403 - not allowed
@@ -22,6 +25,8 @@ SIGNAL_STATUS: dict[str, int] = {
     "ASSIGNEE_NOT_MEMBER": 409, "TASK_AFTER_DEADLINE": 409, "PROJECT_NOT_ACCEPTING": 409,
     "PROJECT_REOPEN_FORBIDDEN": 409, "LAST_ADMIN": 409, "OWNER_CANNOT_LEAVE": 409,
     "NOT_ACTIVE_MEMBER": 409, "OWNS_ONGOING_PROJECTS": 409, "ALREADY_MEMBER": 409,
+    "PROJECT_FINISHED": 409, "CAPACITY_BELOW_TEAM": 409, "DEADLINE_BEFORE_TASKS": 409,
+    "PARENT_OTHER_PROJECT": 422,
     # 422 - invalid input
     "SELF_APPLICATION": 422, "BAD_DECISION": 422, "BAD_ROLE": 422,
 }
@@ -45,6 +50,8 @@ ERRNO_STATUS: dict[int, tuple[int, str]] = {
     1451: (409, "IN_USE"),
     1217: (409, "IN_USE"),
     1048: (422, "MISSING_VALUE"),
+    1213: (409, "RETRY"),                  # deadlock: InnoDB already rolled the transaction back
+    1205: (409, "RETRY"),                  # lock wait timeout
 }
 
 
@@ -77,6 +84,14 @@ def install_error_handlers(app: FastAPI) -> None:
     @app.exception_handler(ApiError)
     async def _api_error(_: Request, e: ApiError):
         return JSONResponse(status_code=e.status, content=_body(e))
+
+    async def _graph_down(_: Request, e: Exception):
+        # Graph features degrade; MySQL-backed features keep working.
+        return JSONResponse(status_code=503, content={"code": "GRAPH_UNAVAILABLE",
+                                                      "message": "The graph database is unavailable"})
+
+    for exc in Neo4jUnavailable:
+        app.add_exception_handler(exc, _graph_down)
 
     @app.exception_handler(pymysql.err.MySQLError)
     async def _mysql_error(_: Request, e: pymysql.err.MySQLError):

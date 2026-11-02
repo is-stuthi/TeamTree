@@ -8,9 +8,9 @@ USE teamtree;
 CREATE OR REPLACE VIEW ProjectListing AS
 SELECT p.p_id, p.p_name, p.description, p.deadline, p.status, p.max_team_size, p.creation_date,
        p.owner_id, CONCAT(u.f_name, ' ', u.l_name) AS owner_name,
-       (SELECT GROUP_CONCAT(d.d_name ORDER BY d.d_name SEPARATOR ',')
+       (SELECT GROUP_CONCAT(d.d_name ORDER BY d.d_name SEPARATOR '\n')
           FROM Domain d WHERE d.project_id = p.p_id) AS domains,
-       (SELECT GROUP_CONCAT(DISTINCT s.s_name ORDER BY s.s_name SEPARATOR ',')
+       (SELECT GROUP_CONCAT(DISTINCT s.s_name ORDER BY s.s_name SEPARATOR '\n')
           FROM Requires r JOIN Skill s ON s.s_id = r.s_id WHERE r.p_id = p.p_id) AS required_skills,
        fn_active_member_count(p.p_id) AS team_size,
        (p.deadline IS NOT NULL AND p.deadline < CURDATE()

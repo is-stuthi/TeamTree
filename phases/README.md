@@ -9,12 +9,12 @@ Work on a branch per phase (`p<N>-<slug>`) and merge through a PR reviewed by a 
 | P1 ✅ | [P1-auth-users.md](P1-auth-users.md): auth, roles, profiles, skills, SchemaForm | 10, 11, 12 | P0 | builder |
 | P2 ✅ | [P2-projects.md](P2-projects.md): projects, requirements, discovery | 6, 7 | P1 | builder |
 | P3 ✅ | [P3-applications.md](P3-applications.md): apply / withdraw / decide transaction | 6, 8 | P2 | builder (architect review) |
-| P4 | [P4-teams-tasks.md](P4-teams-tasks.md): membership, tasks, task tree, transfer | 7, 8 | P3 | builder |
-| P5 | [P5-matching.md](P5-matching.md): candidate scoring, skill gap | 7 | P4 | builder |
-| P6 | [P6-neo4j-graph.md](P6-neo4j-graph.md): sync, embeddings, graph R/U/D, vector search | 4, 9 | P1 (better after P4) | builder (architect review) |
-| P7 | [P7-analytics.md](P7-analytics.md): analytics API + SchemaDashboard | 7, 10 | P5, P6 | builder / sql-scout |
-| P8 | [P8-hardening.md](P8-hardening.md): full tests, CI, review, polish | all | P7 | builder |
-| P9 | [P9-docs-rubric.md](P9-docs-rubric.md): ER, schema doc, justification, README, viva | 1, 2, 5, 13, 14 | P8 | sql-scout → builder |
+| P4 ✅ | [P4-teams-tasks.md](P4-teams-tasks.md): membership, tasks, task tree, transfer | 7, 8 | P3 | builder |
+| P5 ✅ | [P5-matching.md](P5-matching.md): candidate scoring, skill gap | 7 | P4 | builder |
+| P6 ✅ | [P6-neo4j-graph.md](P6-neo4j-graph.md): sync, embeddings, graph R/U/D, vector search | 4, 9 | P1 (better after P4) | builder (architect review) |
+| P7 ✅ | [P7-analytics.md](P7-analytics.md): analytics API + SchemaDashboard | 7, 10 | P5, P6 | builder / sql-scout |
+| P8 ✅ | [P8-hardening.md](P8-hardening.md): full tests, CI, review, polish | all | P7 | builder |
+| P9 ✅ | [P9-docs-rubric.md](P9-docs-rubric.md): ER, schema doc, justification, README, viva | 1, 2, 5, 13, 14 | P8 | sql-scout → builder |
 
 ```
 P0 → P1 → P2 → P3 → P4 → P5 ─┐

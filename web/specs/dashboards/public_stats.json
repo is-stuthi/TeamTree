@@ -1,0 +1,9 @@
+{
+  "title": "TeamTREE today",
+  "grid": { "cols": 3 },
+  "widgets": [
+    { "type": "stat", "title": "Open projects", "source": "/public/stats", "path": "open_projects" },
+    { "type": "stat", "title": "Active members", "source": "/public/stats", "path": "users" },
+    { "type": "stat", "title": "People matched to teams", "source": "/public/stats", "path": "people_matched" }
+  ]
+}

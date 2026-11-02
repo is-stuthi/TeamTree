@@ -74,3 +74,142 @@ SELECT a.a_id, CONCAT(u.f_name, ' ', u.l_name) AS applicant, a.status,
   FROM Application a JOIN Users u ON u.id = a.applicant_id
  WHERE a.p_id = @pid
  ORDER BY a.status = 'Pending' DESC, a.a_date DESC;
+
+-- ---------------------------------------------------------
+-- Q5 [CORRELATED subquery in HAVING] Active members who completed more tasks
+-- than their team's average (done tasks / active members)
+-- used by: GET /projects/{p_id}/team/top-contributors   (api/app/queries/teams.py)
+-- ---------------------------------------------------------
+SET @pid = 4;
+SELECT j.u_id, CONCAT(u.f_name, ' ', u.l_name) AS member_name, COUNT(tk.task_id) AS done
+  FROM Joins j
+  JOIN Team t  ON t.t_id = j.t_id
+  JOIN Users u ON u.id = j.u_id
+  JOIN Task tk ON tk.p_id = t.p_id AND tk.u_id = j.u_id AND tk.status = 'Done'
+ WHERE t.p_id = @pid AND j.leave_date IS NULL
+ GROUP BY t.t_id, t.p_id, j.u_id, u.f_name, u.l_name
+HAVING COUNT(tk.task_id) > (
+       SELECT COUNT(*) / NULLIF((SELECT COUNT(*) FROM Joins j2
+                                  WHERE j2.t_id = t.t_id AND j2.leave_date IS NULL), 0)
+         FROM Task t2
+         JOIN Joins j3 ON j3.t_id = t.t_id AND j3.u_id = t2.u_id AND j3.leave_date IS NULL
+        WHERE t2.p_id = t.p_id AND t2.status = 'Done')
+ ORDER BY done DESC;
+
+-- ---------------------------------------------------------
+-- Q8 [RECURSIVE CTE] Subtask tree with depth and breadcrumb path (depth-first order)
+-- used by: GET /projects/{p_id}/tasks/tree   (api/app/queries/tasks.py TREE)
+-- ---------------------------------------------------------
+SET @pid = 4;
+WITH RECURSIVE tree AS (
+    SELECT task_id, 0 AS depth, CAST(t_name AS CHAR(1000)) AS path,
+           CAST(LPAD(task_id, 8, '0') AS CHAR(1000)) AS sort_key
+      FROM Task WHERE p_id = @pid AND parent_task_id IS NULL
+    UNION ALL
+    SELECT c.task_id, tree.depth + 1, CONCAT(tree.path, ' › ', c.t_name),
+           CONCAT(tree.sort_key, '/', LPAD(c.task_id, 8, '0'))
+      FROM Task c JOIN tree ON c.parent_task_id = tree.task_id
+)
+SELECT tree.depth, CONCAT(REPEAT('    ', tree.depth), tk.t_name) AS task, tk.status, tree.path
+  FROM tree JOIN Task tk ON tk.task_id = tree.task_id
+ ORDER BY tree.sort_key;
+
+-- ---------------------------------------------------------
+-- Q3 [NESTED IN, two levels] Candidates having ANY skill the project requires
+-- (excluding owner, active members, pending applicants, inactive users)
+-- used by: GET /projects/{p_id}/candidates   (api/app/queries/matching.py ANY_SKILL)
+-- ---------------------------------------------------------
+SET @pid = 3;
+SELECT u.id, CONCAT(u.f_name, ' ', u.l_name) AS name
+  FROM Users u
+ WHERE u.id IN (SELECT h.u_id FROM user_has_skill h
+                 WHERE h.s_id IN (SELECT r.s_id FROM Requires r WHERE r.p_id = @pid))
+   AND u.is_active
+   AND u.id <> (SELECT owner_id FROM Project WHERE p_id = @pid)
+   AND NOT fn_is_active_member(@pid, u.id);
+
+-- ---------------------------------------------------------
+-- Q4 [NESTED NOT EXISTS: relational division] Users who meet EVERY requirement
+-- of the project at (or above) the required level
+-- used by: GET /projects/{p_id}/candidates?full=1   (api/app/queries/matching.py ALL_SKILLS)
+-- ---------------------------------------------------------
+SET @pid = 3;
+SELECT u.id, CONCAT(u.f_name, ' ', u.l_name) AS name
+  FROM Users u
+ WHERE NOT EXISTS (
+         SELECT 1 FROM Requires r WHERE r.p_id = @pid
+            AND NOT EXISTS (SELECT 1 FROM user_has_skill h
+                             WHERE h.u_id = u.id AND h.s_id = r.s_id
+                               AND fn_level_ord(h.u_s_level) >= fn_level_ord(r.p_s_level)))
+   AND u.is_active
+   AND u.id <> (SELECT owner_id FROM Project WHERE p_id = @pid)
+   AND NOT fn_is_active_member(@pid, u.id);
+
+-- ---------------------------------------------------------
+-- Q7 [CORRELATED scalar subquery in SELECT] Each active user's strongest skill
+-- used by: GET /users/{user_id}   (api/app/queries/users.py PUBLIC)
+-- ---------------------------------------------------------
+SELECT u.id, CONCAT(u.f_name, ' ', u.l_name) AS name,
+       (SELECT s.s_name FROM user_has_skill h JOIN Skill s ON s.s_id = h.s_id
+         WHERE h.u_id = u.id
+         ORDER BY fn_level_ord(h.u_s_level) DESC, s.s_name LIMIT 1) AS strongest_skill
+  FROM Users u WHERE u.is_active ORDER BY u.id;
+
+-- ---------------------------------------------------------
+-- Q2 [LEFT JOIN + GROUP BY + HAVING] Projects that have received no applications
+-- used by: GET /analytics/projects   (api/app/queries/analytics.py BASE_NO_APPLICATIONS)
+-- ---------------------------------------------------------
+SELECT p.p_id, p.p_name, p.status, COUNT(a.a_id) AS applications
+  FROM Project p LEFT JOIN Application a ON a.p_id = p.p_id
+ GROUP BY p.p_id, p.p_name, p.status
+HAVING COUNT(a.a_id) = 0;
+
+-- ---------------------------------------------------------
+-- Q9 [RECURSIVE CTE: date series] Applications per day, last 30 days, gaps filled with 0
+-- used by: GET /analytics/applications -> timeline   (BASE_TIMELINE)
+-- ---------------------------------------------------------
+WITH RECURSIVE days AS (
+    SELECT CURDATE() - INTERVAL 29 DAY AS d
+    UNION ALL SELECT d + INTERVAL 1 DAY FROM days WHERE d < CURDATE())
+SELECT days.d AS day, COUNT(a.a_id) AS applications
+  FROM days LEFT JOIN Application a ON DATE(a.a_date) = days.d
+ GROUP BY days.d ORDER BY days.d;
+
+-- ---------------------------------------------------------
+-- Q10 [CTE + WINDOW: ROW_NUMBER OVER PARTITION] Top 3 in-demand skills per category
+-- (runs on the TopInDemandSkills view, itself a CTE + RANK() view, as the read-only analyst)
+-- used by: GET /analytics/skills -> top_by_category   (VIEW_TOP_BY_CATEGORY)
+-- ---------------------------------------------------------
+WITH ranked AS (
+    SELECT category, s_name, projects_requiring,
+           ROW_NUMBER() OVER (PARTITION BY category ORDER BY projects_requiring DESC, s_name) AS rn
+      FROM TopInDemandSkills WHERE projects_requiring > 0)
+SELECT category, s_name, projects_requiring, rn AS rank_in_category
+  FROM ranked WHERE rn <= 3 ORDER BY category, rn;
+
+-- ---------------------------------------------------------
+-- Q11 [SELF-JOIN] Pairs of users who have shared a team (history included)
+-- used by: MySQL -> Neo4j sync, builds COLLABORATED_WITH edges   (api/app/graph/source.py PAIRS)
+-- ---------------------------------------------------------
+SELECT LEAST(a.u_id, b.u_id) AS u1, GREATEST(a.u_id, b.u_id) AS u2, COUNT(DISTINCT a.t_id) AS shared_teams
+  FROM Joins a JOIN Joins b ON a.t_id = b.t_id AND a.u_id < b.u_id
+ GROUP BY u1, u2 ORDER BY shared_teams DESC, u1, u2;
+
+-- ---------------------------------------------------------
+-- Q12 [UNION ALL] A user's activity feed: applications, joins, leaves, tasks
+-- used by: GET /users/me/activity   (BASE_ACTIVITY_FEED)
+-- ---------------------------------------------------------
+SET @uid = 7;
+SELECT * FROM (
+    SELECT a.a_date AS at, 'application' AS kind, CONCAT('Applied to ', p.p_name, ' (', a.status, ')') AS what
+      FROM Application a JOIN Project p ON p.p_id = a.p_id WHERE a.applicant_id = @uid
+    UNION ALL
+    SELECT j.join_date, 'team', CONCAT('Joined ', t.team_name, ' as ', j.role)
+      FROM Joins j JOIN Team t ON t.t_id = j.t_id WHERE j.u_id = @uid
+    UNION ALL
+    SELECT j.leave_date, 'team', CONCAT('Left ', t.team_name)
+      FROM Joins j JOIN Team t ON t.t_id = j.t_id WHERE j.u_id = @uid AND j.leave_date IS NOT NULL
+    UNION ALL
+    SELECT tk.created_at, 'task', CONCAT('Task: ', tk.t_name, ' (', tk.status, ')')
+      FROM Task tk WHERE tk.u_id = @uid
+) feed ORDER BY at DESC;

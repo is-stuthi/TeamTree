@@ -49,7 +49,8 @@ CREATE TABLE Project (
     creation_date DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_project_owner FOREIGN KEY (owner_id) REFERENCES Users(id) ON DELETE RESTRICT,
     CONSTRAINT chk_project_deadline CHECK (deadline IS NULL OR deadline >= DATE(creation_date)),
-    CONSTRAINT chk_project_capacity CHECK (max_team_size IS NULL OR max_team_size >= 1)
+    CONSTRAINT chk_project_capacity CHECK (max_team_size IS NULL OR max_team_size >= 1),
+    CONSTRAINT chk_project_name CHECK (TRIM(p_name) <> '')
 ) ENGINE=InnoDB;
 
 -- Multivalued attribute "domain" of PROJECT
@@ -68,7 +69,8 @@ CREATE TABLE Skill (
     s_name      VARCHAR(100) NOT NULL,
     s_name_norm VARCHAR(100) AS (LOWER(TRIM(s_name))) STORED,
     category    VARCHAR(100) NULL,
-    UNIQUE KEY uq_skill_name_norm (s_name_norm)
+    UNIQUE KEY uq_skill_name_norm (s_name_norm),
+    CONSTRAINT chk_skill_name CHECK (TRIM(s_name) <> '')
 ) ENGINE=InnoDB;
 
 -- PROJECT -REQUIRES-> SKILL (M:N, relationship attributes level/role/count)
@@ -103,6 +105,7 @@ CREATE TABLE Team (
     team_name   VARCHAR(150) NOT NULL,
     create_date DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     UNIQUE KEY uq_team_project (p_id),
+    CONSTRAINT chk_team_name CHECK (TRIM(team_name) <> ''),
     CONSTRAINT fk_team_project FOREIGN KEY (p_id) REFERENCES Project(p_id) ON DELETE RESTRICT
 ) ENGINE=InnoDB;
 
@@ -139,7 +142,8 @@ CREATE TABLE Task (
     created_at     DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_task_project FOREIGN KEY (p_id)           REFERENCES Project(p_id) ON DELETE RESTRICT,
     CONSTRAINT fk_task_user    FOREIGN KEY (u_id)           REFERENCES Users(id)     ON DELETE SET NULL,
-    CONSTRAINT fk_task_parent  FOREIGN KEY (parent_task_id) REFERENCES Task(task_id) ON DELETE CASCADE
+    CONSTRAINT fk_task_parent  FOREIGN KEY (parent_task_id) REFERENCES Task(task_id) ON DELETE CASCADE,
+    CONSTRAINT chk_task_name CHECK (TRIM(t_name) <> '')
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------

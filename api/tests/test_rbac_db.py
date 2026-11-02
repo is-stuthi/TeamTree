@@ -26,7 +26,7 @@ def test_column_level_privileges(app_conn):
 
 def test_create_project_procedure_builds_team_and_owner_membership(app_conn):
     with app_conn.cursor() as cur:
-        cur.execute("CALL create_project(3, 'RBAC Demo', NULL, NULL, 4, @pid)")
+        cur.execute("CALL create_project(3, 'RBAC Demo', NULL, NULL, 4, NULL, @pid)")
         cur.execute("SELECT @pid AS pid")
         pid = cur.fetchone()["pid"]
     row = one(app_conn, "SELECT t.team_name, j.role FROM Team t JOIN Joins j ON j.t_id=t.t_id "

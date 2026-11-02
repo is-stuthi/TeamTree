@@ -33,6 +33,7 @@ export interface FieldProps {
   onChange: (value: unknown) => void;
   onBlur: () => void;
   invalid: boolean;
+  params?: Record<string, string | number>;   // fills {placeholders} in remote-select sources
 }
 
 export const formSchema = (spec: UiSpec) => spec.schema as unknown as FormSchema;

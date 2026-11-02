@@ -10,16 +10,17 @@ type Status = (typeof STATUSES)[number];
 
 export default async function ApplicationsPage({ params, searchParams }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ status?: Status }>;
+  searchParams: Promise<{ status?: string }>;
 }) {
   const p_id = Number((await params).id);
-  const status = (await searchParams).status ?? "Pending";
+  const raw = (await searchParams).status;
+  const status: Status = STATUSES.find((s) => s === raw) ?? "Pending";   // ignore invalid ?status=
   const api = await serverApi();
-  const [{ data: apps = [] }, { data: all = [] }, acceptSpec] = await Promise.all([
-    api.GET("/projects/{p_id}/applications", { params: { path: { p_id }, query: { status } } }),
-    api.GET("/projects/{p_id}/applications", { params: { path: { p_id } } }),
+  const [{ data: all = [] }, acceptSpec] = await Promise.all([
+    api.GET("/projects/{p_id}/applications", { params: { path: { p_id } } }),   // one query; filter here
     getSpec("application_accept"),
   ]);
+  const apps = all.filter((a) => a.status === status);
   const count = (s: Status) => all.filter((a) => a.status === s).length;
 
   return (

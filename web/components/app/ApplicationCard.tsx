@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import type { components } from "@/lib/api/schema";
@@ -15,7 +16,7 @@ export function ApplicationCard({ app, acceptSpec }: { app: Received; acceptSpec
     <Card>
       <CardHeader>
         <div className="flex items-start justify-between gap-2">
-          <CardTitle>{app.applicant_name}</CardTitle>
+          <CardTitle><Link href={`/users/${app.applicant_id}`} className="hover:underline">{app.applicant_name}</Link></CardTitle>
           <StatusBadge status={app.status} />
         </div>
         <CardDescription>

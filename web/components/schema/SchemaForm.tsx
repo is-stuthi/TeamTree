@@ -38,7 +38,8 @@ export function SchemaForm({ spec, defaultValues, resetOnSuccess, submitLabel, o
     <form onSubmit={form.handleSubmit(submit)} className="grid gap-4" noValidate aria-label={spec.title}>
       {spec.ui.order.filter((name) => !fields[name]?.hidden && schema.properties[name]).map((name) => (
         <FieldRenderer key={name} formId={formId} name={name} prop={schema.properties[name]}
-                       hint={fields[name] ?? {}} required={required.has(name)} control={form.control} />
+                       hint={fields[name] ?? {}} required={required.has(name)} control={form.control}
+                       params={opts.params} />
       ))}
       <Button type="submit" disabled={form.formState.isSubmitting} className="justify-self-start">
         {form.formState.isSubmitting ? "Saving…" : submitLabel ?? spec.submit_label}

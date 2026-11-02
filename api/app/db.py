@@ -1,5 +1,10 @@
 """MySQL access. The API connects as the low-privilege `tt_app` user (role
-tt_member_app), so guarded writes must go through stored procedures."""
+tt_member_app), so guarded writes must go through stored procedures.
+
+Transaction rule: procedures own their transactions (START TRANSACTION ... COMMIT
+inside, with an EXIT HANDLER that rolls back). Never CALL a procedure inside a
+client-side transaction: its START TRANSACTION would implicitly commit it.
+Multi-statement writes that must be atomic belong in a procedure, not here."""
 from contextlib import asynccontextmanager
 from typing import Any
 
@@ -8,25 +13,41 @@ import aiomysql
 from app.settings import get_settings
 
 _pool: aiomysql.Pool | None = None
+_report_pool: aiomysql.Pool | None = None     # tt_report (role tt_analyst): SELECT on views only
 
 
-async def init_pool() -> None:
-    global _pool
+async def _create(user: str, password: str, maxsize: int) -> aiomysql.Pool:
     s = get_settings()
-    _pool = await aiomysql.create_pool(
-        host=s.mysql_host, port=s.mysql_port, db=s.mysql_db,
-        user="tt_app", password=s.tt_app_password,
-        autocommit=True, minsize=1, maxsize=10, charset="utf8mb4",
-        cursorclass=aiomysql.DictCursor,
+    return await aiomysql.create_pool(
+        host=s.mysql_host, port=s.mysql_port, db=s.mysql_db, user=user, password=password,
+        autocommit=True, minsize=1, maxsize=maxsize, charset="utf8mb4", cursorclass=aiomysql.DictCursor,
     )
 
 
+async def init_pool() -> None:
+    global _pool, _report_pool
+    s = get_settings()
+    _pool = await _create("tt_app", s.tt_app_password, 10)
+    _report_pool = await _create("tt_report", s.tt_report_password, 4)
+
+
 async def close_pool() -> None:
-    global _pool
-    if _pool is not None:
-        _pool.close()
-        await _pool.wait_closed()
-        _pool = None
+    global _pool, _report_pool
+    for pool in (_pool, _report_pool):
+        if pool is not None:
+            pool.close()
+            await pool.wait_closed()
+    _pool = _report_pool = None
+
+
+async def report_fetch_all(sql: str, params: Any = None) -> list[dict]:
+    """Analytics reads as the read-only analyst user (views only, enforced by MySQL grants)."""
+    if _report_pool is None:
+        raise RuntimeError("report pool not initialised")
+    async with _report_pool.acquire() as conn:
+        async with conn.cursor() as cur:
+            await cur.execute(sql, params)
+            return list(await cur.fetchall())
 
 
 @asynccontextmanager

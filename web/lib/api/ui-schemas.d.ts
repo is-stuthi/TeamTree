@@ -18,6 +18,32 @@ export interface ApplicationCreateValues {
   msg: string;
 }
 
+export interface EndorseValues {
+  /**
+   * Endorse
+   */
+  to: number;
+  /**
+   * Skill
+   */
+  skill_id: number;
+  /**
+   * Strength (1-5)
+   */
+  weight: number;
+  /**
+   * Note
+   */
+  note?: string;
+}
+
+export interface GraphSearchValues {
+  /**
+   * Describe what you want to work on
+   */
+  q: string;
+}
+
 export interface LoginValues {
   /**
    * Email
@@ -193,6 +219,21 @@ export interface RegisterValues {
   password: string;
 }
 
+export interface RelationAddValues {
+  /**
+   * Skill
+   */
+  a: number;
+  /**
+   * Related skill
+   */
+  b: number;
+  /**
+   * Strength (0-1)
+   */
+  weight: number;
+}
+
 export interface RequirementAddValues {
   /**
    * Skill
@@ -241,9 +282,68 @@ export interface SkillAdminValues {
   category?: string;
 }
 
+export interface TaskCreateValues {
+  /**
+   * Task
+   */
+  t_name: string;
+  /**
+   * Description
+   */
+  description?: string;
+  /**
+   * Priority
+   */
+  priority?: "Low" | "Medium" | "High" | "Critical";
+  /**
+   * Due date
+   */
+  due_date?: string;
+  /**
+   * Assignee
+   */
+  u_id?: number;
+  /**
+   * Parent task
+   */
+  parent_task_id?: number;
+}
+
+export interface TaskEditValues {
+  /**
+   * Task
+   */
+  t_name?: string;
+  /**
+   * Description
+   */
+  description?: string;
+  /**
+   * Status
+   */
+  status?: "To Do" | "In Progress" | "Done" | "Blocked";
+  /**
+   * Priority
+   */
+  priority?: "Low" | "Medium" | "High" | "Critical";
+  /**
+   * Due date
+   */
+  due_date?: string;
+}
+
+export interface TransferOwnershipValues {
+  /**
+   * New owner
+   */
+  new_owner: number;
+}
+
 export interface UiFormValues {
   "application_accept": ApplicationAcceptValues;
   "application_create": ApplicationCreateValues;
+  "endorse": EndorseValues;
+  "graph_search": GraphSearchValues;
   "login": LoginValues;
   "password_change": PasswordChangeValues;
   "profile_edit": ProfileEditValues;
@@ -251,9 +351,13 @@ export interface UiFormValues {
   "project_edit": ProjectEditValues;
   "project_filter": ProjectFilterValues;
   "register": RegisterValues;
+  "relation_add": RelationAddValues;
   "requirement_add": RequirementAddValues;
   "requirement_copy": RequirementCopyValues;
   "skill_add": SkillAddValues;
   "skill_admin": SkillAdminValues;
+  "task_create": TaskCreateValues;
+  "task_edit": TaskEditValues;
+  "transfer_ownership": TransferOwnershipValues;
 }
 export type UiFormName = keyof UiFormValues;

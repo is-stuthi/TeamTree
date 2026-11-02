@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  gate:
+    name: Phase gate (DB + API + web)
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      MYSQL_PORT: "3306"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create .env for CI (throwaway passwords)
+        run: |
+          cp .env.example .env
+          sed -i 's/^MYSQL_ROOT_PASSWORD=.*/MYSQL_ROOT_PASSWORD=ci-root-pw/' .env
+          sed -i 's/^TT_APP_PASSWORD=.*/TT_APP_PASSWORD=ci-app-pw/' .env
+          sed -i 's/^TT_REPORT_PASSWORD=.*/TT_REPORT_PASSWORD=ci-report-pw/' .env
+          sed -i 's/^NEO4J_PASSWORD=.*/NEO4J_PASSWORD=ci-neo4j-pw/' .env
+          sed -i 's/^MYSQL_PORT=.*/MYSQL_PORT=3306/' .env
+          sed -i 's/^JWT_SECRET=.*/JWT_SECRET=ci-jwt-secret-that-is-long-enough-123456/' .env
+          printf "API_URL=http://localhost:8000\nJWT_SECRET=ci-jwt-secret-that-is-long-enough-123456\n" > web/.env.local
+
+      - name: Start MySQL and Neo4j
+        run: |
+          docker compose up -d db graph
+          for i in $(seq 1 60); do
+            s=$(docker compose ps --format '{{.Service}}:{{.Health}}' | tr '\n' ' ')
+            case "$s" in *db:healthy*graph:healthy*|*graph:healthy*db:healthy*) echo "healthy: $s"; break;; esac
+            sleep 5
+          done
+
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+
+      - name: Install API (CPU torch for embeddings)
+        working-directory: api
+        run: |
+          pip install torch --index-url https://download.pytorch.org/whl/cpu
+          pip install -e ".[dev,graph]"
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: hf-all-MiniLM-L6-v2
+
+      - name: Migrate MySQL, build the graph
+        working-directory: api
+        run: |
+          python scripts/migrate.py
+          python scripts/sync_graph.py --full
+
+      - name: API tests (business rules, RBAC, concurrency, graph, analytics)
+        working-directory: api
+        run: python -m pytest -q
+
+      - uses: actions/setup-node@v4
+        with: { node-version: "22", cache: npm, cache-dependency-path: web/package-lock.json }
+
+      - name: Web install
+        working-directory: web
+        run: npm ci
+
+      - name: Generated TS defs are up to date
+        run: |
+          (cd api && python scripts/dump_openapi.py)
+          (cd web && npm run gen)
+          git diff --exit-code web/lib/api/
+
+      - name: Lint (150-line rule), typecheck, unit tests, build
+        working-directory: web
+        run: |
+          npm run lint
+          npm run typecheck
+          npm test
+          npm run build

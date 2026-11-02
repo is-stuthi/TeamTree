@@ -17,6 +17,7 @@ interface FieldRendererProps {
   hint: FieldHint;
   required: boolean;
   control: Control<FormValues>;
+  params?: Record<string, string | number>;
 }
 
 function Widget(props: FieldProps) {
@@ -31,7 +32,7 @@ function Widget(props: FieldProps) {
   }
 }
 
-export function FieldRenderer({ formId, name, prop, hint, required, control }: FieldRendererProps) {
+export function FieldRenderer({ formId, name, prop, hint, required, control, params }: FieldRendererProps) {
   const id = `${formId}-${name}`;
   return (
     <Controller
@@ -40,7 +41,7 @@ export function FieldRenderer({ formId, name, prop, hint, required, control }: F
       render={({ field, fieldState }) => (
         <FieldShell id={id} label={hint.label ?? prop.title ?? name} required={required}
                     help={hint.help} error={fieldState.error?.message}>
-          <Widget id={id} name={name} prop={prop} hint={hint} value={field.value}
+          <Widget id={id} name={name} prop={prop} hint={hint} value={field.value} params={params}
                   onChange={field.onChange} onBlur={field.onBlur} invalid={Boolean(fieldState.error)} />
         </FieldShell>
       )}

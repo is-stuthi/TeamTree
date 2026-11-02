@@ -28,6 +28,13 @@ def fresh_graph():
     graph_init.apply(reset=True, quiet=True)
 
 
+@pytest.fixture(scope="module")
+def synced_graph(fresh_db):
+    """Fresh MySQL seed projected into a wiped Neo4j, plus graph-only seed data."""
+    import sync_graph
+    return sync_graph.sync(full=True, quiet=True)
+
+
 def _connect(user: str, password: str) -> pymysql.Connection:
     s = get_settings()
     return pymysql.connect(host=s.mysql_host, port=s.mysql_port, user=user, password=password,

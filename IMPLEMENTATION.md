@@ -328,9 +328,16 @@ BEGIN
 END$$
 
 CREATE TRIGGER trg_task_bi BEFORE INSERT ON Task
-FOR EACH ROW CALL validate_task(NEW.p_id, NEW.u_id, NEW.due_date)$$
+FOR EACH ROW CALL validate_task(NEW.p_id, NEW.u_id, NEW.due_date, NEW.parent_task_id)$$
+-- (also rejects tasks on Completed/Closed projects: PROJECT_FINISHED)
+-- UPDATE only re-checks columns that changed (NULL = skip), so a Done task whose
+-- assignee left, or a task due after a since-moved deadline, can still be edited.
 CREATE TRIGGER trg_task_bu BEFORE UPDATE ON Task
-FOR EACH ROW CALL validate_task(NEW.p_id, NEW.u_id, NEW.due_date)$$
+FOR EACH ROW CALL validate_task(NEW.p_id, IF(NEW.u_id <=> OLD.u_id, NULL, NEW.u_id),
+    IF(NEW.due_date <=> OLD.due_date, NULL, NEW.due_date),
+    IF(NEW.parent_task_id <=> OLD.parent_task_id, NULL, NEW.parent_task_id))$$
+-- trg_project_bu additionally blocks: max_team_size below the current team
+-- (CAPACITY_BELOW_TEAM) and a deadline before open tasks (DEADLINE_BEFORE_TASKS).
 
 CREATE TRIGGER trg_project_bu BEFORE UPDATE ON Project           -- lifecycle guard
 FOR EACH ROW
@@ -354,13 +361,15 @@ START TRANSACTION;  …validate (SIGNAL)…  …writes…  COMMIT;
 | Procedure | Signature | Behaviour |
 |---|---|---|
 | `register_user` | `(f, m, l, email, hash, OUT id)` | Insert with role `member`. |
-| `create_project` | `(owner, name, desc, deadline, max_size, OUT p_id)` | Project → Team → owner in Joins (`Owner`). One transaction. |
+| `create_project` | `(owner, name, desc, deadline, max_size, domains JSON, OUT p_id)` | Project → Team → owner in Joins (`Owner`) → domains (JSON_TABLE, case-insensitive dedupe). One transaction. |
+| `set_project_domains` | `(p_id, actor, domains JSON)` | Owner/admin; replace domains atomically. |
+| `close_project` | `(p_id, actor)` | Owner/admin; status Closed + D3 (`UPDATE … JOIN` blocks unfinished tasks) + reject pending applications, one transaction. |
 | `apply_to_project` | `(user, p_id, msg, OUT a_id)` | Insert; trigger + pending-unique index validate. |
 | `decide_application` | `(a_id, actor, decision, role)` | §16.1 transaction (below). |
 | `withdraw_application` | `(a_id, actor)` | Actor = applicant, Pending → Withdrawn. |
 | `assign_task` | `(task_id, actor, assignee)` | Actor must be owner or active member; trigger checks the assignee. |
-| `remove_member` / `leave_team` | `(p_id, actor, user)` | Set `leave_date`; unassign the user's non-Done tasks; owner can't be removed. |
-| `transfer_ownership` | `(p_id, actor, new_owner)` | New owner must be an active member; swap roles; insert `Ownership_Transfer`. |
+| `remove_member` / `leave_team` | `(p_id, actor, user)` | Owner, admin or self; set `leave_date`; unassign the user's non-Done tasks; owner can't be removed. |
+| `transfer_ownership` | `(p_id, actor, new_owner)` | Owner or admin; new owner must be an active member with an active account (row locked FOR SHARE); swap roles; insert `Ownership_Transfer`. |
 | `create_skill` / `update_skill` | `(actor, name, category)` | `fn_is_admin(actor)` or SIGNAL `NOT_ADMIN`. |
 | `set_user_role` | `(actor, user, role)` | Admin only; can't demote the last active admin. |
 | `deactivate_user` | `(actor, user)` | Self or admin; sets `is_active = FALSE`; closes the user's Open projects. |
@@ -679,11 +688,13 @@ CREATE ROLE IF NOT EXISTS 'tt_admin', 'tt_member_app', 'tt_analyst';
 GRANT ALL PRIVILEGES ON teamtree.* TO 'tt_admin';
 
 -- Application role: read everything, write only where safe; guarded writes go through procedures
-GRANT SELECT, EXECUTE ON teamtree.* TO 'tt_member_app';
+-- (the real file first REVOKEs everything so stale grants can't survive a migration,
+--  and grants EXECUTE per procedure/function; validate_task is excluded)
+GRANT SELECT ON teamtree.* TO 'tt_member_app';
 GRANT INSERT, UPDATE, DELETE ON teamtree.user_has_skill TO 'tt_member_app';
 GRANT INSERT, UPDATE, DELETE ON teamtree.Requires       TO 'tt_member_app';
-GRANT INSERT, DELETE         ON teamtree.Domain         TO 'tt_member_app';
-GRANT INSERT, UPDATE         ON teamtree.Task           TO 'tt_member_app';
+GRANT INSERT ON teamtree.Task TO 'tt_member_app';
+GRANT UPDATE (t_name, description, status, priority, due_date, u_id) ON teamtree.Task TO 'tt_member_app';
 GRANT UPDATE (p_name, description, deadline, status, max_team_size)   -- column-level privilege:
              ON teamtree.Project TO 'tt_member_app';                  -- owner_id only via transfer_ownership
 -- NO INSERT/UPDATE on Application, Joins, Team, Skill, Ownership_Transfer, Users.role/is_active,

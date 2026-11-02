@@ -21,6 +21,9 @@ async def get_me(user: CurrentUser = Depends(current_user)):
 @router.patch("/me", response_model=UserMe)
 async def update_me(body: ProfilePatch, user: CurrentUser = Depends(current_user)):
     changes = body.model_dump(exclude_unset=True)
+    # Clearing an optional field (bio, location, dob...) stores NULL; a cleared
+    # NOT NULL field is ignored rather than rejected.
+    changes = {k: v for k, v in changes.items() if v is not None or k not in q.NOT_NULL_COLUMNS}
     if changes:
         await db.execute(q.profile_update(list(changes)), (*changes.values(), user.id))
         await sync.upsert_user(user.id)
@@ -71,6 +74,11 @@ async def remove_skill(s_id: int, user: CurrentUser = Depends(current_user)):
         raise ApiError(404, "SKILL_NOT_ON_PROFILE")
     await sync.upsert_user_skills(user.id)
     return await db.fetch_all(q.SKILLS, (user.id,))
+
+
+@router.get("/{user_id}/skills", response_model=list[UserSkillOut])
+async def user_skills(user_id: int, _: CurrentUser = Depends(current_user)):
+    return await db.fetch_all(q.SKILLS, (user_id,))
 
 
 @router.get("/{user_id}", response_model=UserPublic)

@@ -1,4 +1,6 @@
-"""Projects: create (create_project procedure), browse, detail (Q1), edit (D3 on close)."""
+"""Projects: create (create_project procedure), browse, detail (Q1), edit, close (close_project)."""
+import json
+
 from fastapi import APIRouter, Depends, Query
 
 from app import db
@@ -20,9 +22,9 @@ async def list_projects(f: ProjectFilter = Query()):
 
 @router.post("", response_model=ProjectDetail, status_code=201)
 async def create_project(body: ProjectCreate, user: CurrentUser = Depends(current_user)):
+    # Project, team, owner membership and domains commit together (one procedure).
     (p_id,) = await db.call_proc("create_project", user.id, body.p_name, body.description,
-                                 body.deadline, body.max_team_size, out=1)
-    await _replace_domains(p_id, body.domains)
+                                 body.deadline, body.max_team_size, json.dumps(body.domains), out=1)
     await sync.upsert_project(p_id)
     return await _detail(p_id, user)
 
@@ -37,21 +39,19 @@ async def update_project(p_id: int, body: ProjectPatch, user: CurrentUser = Depe
     await require_owner(p_id, user)
     changes = body.model_dump(exclude_unset=True)
     domains = changes.pop("domains", None)
+    close = changes.get("status") == "Closed"
+    if close:
+        changes.pop("status")
+    # A cleared (null) value on a NOT NULL column means "leave unchanged".
+    changes = {k: v for k, v in changes.items() if v is not None or k not in q.NOT_NULL_COLUMNS}
     if changes:
         await db.execute(q.patch(list(changes)), (*changes.values(), p_id))
-        if changes.get("status") == "Closed":
-            await db.execute(q.BLOCK_TASKS_ON_CLOSE, (p_id,))        # D3
     if domains is not None:
-        await _replace_domains(p_id, domains)
+        await db.call_proc("set_project_domains", p_id, user.id, json.dumps(domains))
+    if close:
+        await db.call_proc("close_project", p_id, user.id)     # status + D3 + reject pending
     await sync.upsert_project(p_id)
     return await _detail(p_id, user)
-
-
-async def _replace_domains(p_id: int, domains: list[str]) -> None:
-    clean = sorted({d.strip() for d in domains if d.strip()})
-    await db.execute(q.DELETE_DOMAINS, (p_id,))
-    if clean:
-        await db.execute_many(q.INSERT_DOMAINS, [(p_id, d[:100]) for d in clean])
 
 
 async def _detail(p_id: int, user: CurrentUser | None) -> dict:

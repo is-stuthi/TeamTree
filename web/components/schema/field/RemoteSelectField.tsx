@@ -7,7 +7,8 @@ import { SelectField, type Option } from "./SelectField";
 
 /** Select whose options come from a GET endpoint (hint.source), e.g. the skill catalogue. */
 export function RemoteSelectField(props: FieldProps) {
-  const { source, label_key = "name", value_key = "id" } = props.hint;
+  const { label_key = "name", value_key = "id" } = props.hint;
+  const source = props.hint.source?.replace(/\{(\w+)\}/g, (_, k: string) => String(props.params?.[k] ?? ""));
   const { data, isLoading } = useQuery({
     queryKey: ["options", source],
     enabled: Boolean(source),

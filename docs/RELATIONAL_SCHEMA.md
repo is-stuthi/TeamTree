@@ -1,0 +1,160 @@
+# TeamTREE: Relational schema (v2)
+
+Implemented in [`db/001_schema.sql`](../db/001_schema.sql) (MySQL 8.0, InnoDB). The ER diagram is
+[`er.svg`](er.svg) (source [`er.mmd`](er.mmd)); the conceptual Chen diagram is
+[`ER Diagram.png`](ER%20Diagram.png).
+
+Notation: **PK** primary key, **FK** foreign key, **UK** unique key, *italic* = derived/generated.
+
+## 1. Relations
+
+### USERS
+`Users(id PK, f_name, m_name, l_name, email UK, password_hash, role, bio, location, u_photo, dob, experience_level, availability, is_active, created_at)`
+
+| Constraint | Definition | Why |
+|---|---|---|
+| PK | `id` (surrogate, AUTO_INCREMENT) | stable identity; email can change |
+| UK | `uq_users_email (email)` | rule 2: one account per email |
+| CHECK | `chk_users_email`: `email LIKE '%_@_%._%'` | basic shape validation at the DB layer |
+| ENUM | `role ∈ {admin, member}`, `experience_level`, `availability` | closed domains |
+| Soft delete | `is_active` | §13.13: history (applications, tasks) must survive |
+
+Composite attribute *name* = (f_name, m_name, l_name). *Age* is derived from `dob` and never stored.
+
+### SKILL
+`Skill(s_id PK, s_name, *s_name_norm* UK, category)`
+
+`s_name_norm` is a **stored generated column** `LOWER(TRIM(s_name))` with a UNIQUE index, so
+"Python", "python " and "PYTHON" cannot coexist (rule 8). `CHECK (TRIM(s_name) <> '')`.
+
+### PROJECT  (USER —CREATES→ PROJECT, 1:N)
+`Project(p_id PK, owner_id FK→Users, p_name, description, deadline, status, max_team_size, creation_date)`
+
+| Constraint | Definition |
+|---|---|
+| FK | `owner_id → Users(id) ON DELETE RESTRICT` (soft delete, §13.12) |
+| CHECK | `chk_project_deadline`: `deadline IS NULL OR deadline >= DATE(creation_date)` (rule 15) |
+| CHECK | `chk_project_capacity`: `max_team_size IS NULL OR max_team_size >= 1` |
+| CHECK | `chk_project_name`: `TRIM(p_name) <> ''` |
+| ENUM | `status ∈ {Open, Ongoing, Completed, Closed}` |
+
+The 1:N CREATES relationship maps to the FK `owner_id` on the N side (no separate table).
+
+### DOMAIN  (multivalued attribute of PROJECT)
+`Domain(project_id PK/FK→Project, d_name PK)`: `ON DELETE CASCADE` (pure child data).
+
+### USER_HAS_SKILL  (USER —HAS→ SKILL, M:N)
+`user_has_skill(u_id PK/FK→Users, s_id PK/FK→Skill, u_s_level)`
+
+Composite PK `(u_id, s_id)`: one proficiency per user per skill (rule 9). `u_s_level` is the
+relationship attribute; it describes the pair, not the skill (§7.1).
+
+### REQUIRES  (PROJECT —REQUIRES→ SKILL, M:N)
+`Requires(p_id PK/FK→Project, s_id PK/FK→Skill, req_role PK, p_s_level, req_count)`
+
+The PK includes `req_role` so one skill can be needed for several roles (§14.1).
+`CHECK (req_count > 0)`.
+
+### TEAM  (PROJECT —HAS→ TEAM, 1:1)
+`Team(t_id PK, p_id FK→Project UK, team_name, create_date)`
+
+The 1:1 is enforced by `UNIQUE (p_id)` on the FK. A project may exist before its team (partial
+participation on the PROJECT side); `create_project` creates both in one transaction.
+
+### JOINS  (USER —JOINS→ TEAM, M:N with history)
+`Joins(j_id PK, t_id FK→Team, u_id FK→Users, role, join_date, leave_date, *active_flag*)`
+
+A plain composite PK `(t_id, u_id)` would forbid **rejoining**, which would lose membership history (§13.8).
+Instead a surrogate `j_id` plus a generated column:
+
+```sql
+active_flag TINYINT AS (IF(leave_date IS NULL, 1, NULL)) STORED,
+UNIQUE KEY uq_joins_active (t_id, u_id, active_flag)
+```
+
+UNIQUE ignores NULLs, so any number of past rows (flag NULL) are allowed but only **one active row**
+per (team, user) (rule 27). `CHECK (leave_date IS NULL OR leave_date >= join_date)`.
+
+### APPLICATION  (USER —SUBMITS→ APPLICATION —FOR→ PROJECT; USER —REVIEWS→ APPLICATION)
+`Application(a_id PK, applicant_id FK→Users, p_id FK→Project, msg, status, a_date, decision_date, *pending_flag*)`
+
+| Constraint | Definition |
+|---|---|
+| UK | `uq_application_pending (applicant_id, p_id, pending_flag)` with `pending_flag = IF(status='Pending',1,NULL)`: at most one *pending* application per pair; reapplying after Rejected/Withdrawn is allowed (rule 20, §12.4 policy) |
+| CHECK | `chk_application_decision`: Pending/Withdrawn ⇒ `decision_date IS NULL`; Accepted/Rejected ⇒ `decision_date IS NOT NULL` |
+| FKs | both `ON DELETE RESTRICT` |
+
+The **reviewer is not stored**: it is derived as `Project.owner_id` via `p_id` (§7.6, §14.2).
+Storing it would create a transitive dependency `a_id → p_id → owner_id`.
+
+### TASK  (PROJECT —CONTAINS→ TASK 1:N; USER —ASSIGNED_TO→ TASK 1:N; TASK —SUBTASK_OF→ TASK)
+`Task(task_id PK, p_id FK→Project, u_id FK→Users NULL, parent_task_id FK→Task NULL, t_name, description, status, priority, due_date, created_at)`
+
+`u_id` is nullable (unassigned); `ON DELETE SET NULL`. `parent_task_id` is a recursive FK
+(`ON DELETE CASCADE`), which powers the recursive-CTE task tree (Q8). `CHECK (TRIM(t_name) <> '')`.
+
+### OWNERSHIP_TRANSFER  (audit)
+`Ownership_Transfer(ot_id PK, p_id FK, from_user FK, to_user FK, transferred_at)`: `CHECK (from_user <> to_user)`.
+
+## 2. ER → relation mapping
+
+| ER element | Cardinality | Relational mapping |
+|---|---|---|
+| USER, SKILL, PROJECT, APPLICATION, TEAM, TASK | entities | one table each, surrogate PK |
+| CREATES (USER–PROJECT) | 1:N | FK `Project.owner_id` |
+| HAS (USER–SKILL) + `proficiency` | M:N | junction `user_has_skill`, composite PK |
+| REQUIRES (PROJECT–SKILL) + level/role/count | M:N | junction `Requires`, PK incl. role |
+| SUBMITS (USER–APPLICATION) | 1:N | FK `Application.applicant_id` |
+| RECEIVES (PROJECT–APPLICATION) | 1:N | FK `Application.p_id` |
+| REVIEWS (USER–APPLICATION) + `decision_date` | 1:N | **derived** via `p_id → owner_id`; attribute on Application |
+| HAS (PROJECT–TEAM) | 1:1 | FK `Team.p_id` + UNIQUE |
+| JOINS (USER–TEAM) + role, dates | M:N | `Joins` with surrogate PK + generated-flag uniqueness |
+| CONTAINS (PROJECT–TASK) | 1:N | FK `Task.p_id` |
+| ASSIGNED_TO (USER–TASK) | 1:N (optional) | nullable FK `Task.u_id` |
+| SUBTASK_OF (TASK–TASK) | 1:N recursive | nullable FK `Task.parent_task_id` |
+| domain (multivalued attr.) | — | table `Domain` |
+| name (composite attr.) | — | columns f/m/l_name |
+| age (derived attr.) | — | not stored; computed from `dob` |
+
+## 3. Functional dependencies & normal forms
+
+For every table the only non-trivial FDs have a candidate key on the left:
+
+| Table | Key(s) | FDs |
+|---|---|---|
+| Users | `id`, `email` | id → all; email → all |
+| Skill | `s_id`, `s_name_norm` | s_id → s_name, category; s_name → s_name_norm (generated, same tuple) |
+| Project | `p_id` | p_id → owner_id, p_name, … |
+| Domain | `(project_id, d_name)` | — (all-key) |
+| user_has_skill | `(u_id, s_id)` | (u_id, s_id) → u_s_level |
+| Requires | `(p_id, s_id, req_role)` | (p_id, s_id, req_role) → p_s_level, req_count |
+| Team | `t_id`, `p_id` | t_id → p_id, team_name; p_id → t_id |
+| Joins | `j_id` | j_id → t_id, u_id, role, dates |
+| Application | `a_id` | a_id → applicant_id, p_id, msg, status, dates |
+| Task | `task_id` | task_id → all |
+
+- **1NF:** atomic values; the multivalued *domain* and the skill lists live in their own tables
+  (no comma-separated columns, §15).
+- **2NF:** no partial dependencies. In the composite-key tables, `u_s_level` needs both
+  `u_id` and `s_id`, and `req_count` needs all three Requires key columns.
+- **3NF / BCNF:** no transitive dependencies. The candidates were removed by design:
+  reviewer (`a_id → p_id → owner_id`), skill name in user_has_skill, project owner name, team size,
+  acceptance rate and age. Derived values come from **views**: `ProjectListing.team_size`,
+  `is_overdue`, `ProjectApplicationSummary.acceptance_rate`, `SkillGap`.
+
+Documented, controlled redundancy: `Joins.role = 'Owner'` mirrors `Project.owner_id` for display.
+Only `create_project` and `transfer_ownership` write it, inside the same transaction as `owner_id`,
+so they cannot diverge.
+
+## 4. Integrity beyond constraints
+
+Rules that a FK/CHECK cannot express are enforced **inside the database**:
+
+| Rule | Mechanism |
+|---|---|
+| apply only to Open projects; not your own; not when full | trigger `trg_application_bi` |
+| assignee must be an active member; due ≤ deadline; parent in same project; no tasks on finished projects | triggers `trg_task_bi/bu` → `validate_task` |
+| finished projects can't reopen; capacity ≥ team; deadline ≥ open tasks | trigger `trg_project_bu` |
+| accept = status + decision date + membership, atomically, capacity-safe | procedure `decide_application` (row lock + `FOR SHARE` count) |
+| only owner/admin may decide, remove, transfer, close; only admin may manage skills/roles | procedures check `p_actor` (`fn_is_admin`) |
+| the app cannot bypass the procedures | MySQL roles: `tt_member_app` has **no** write grant on Application/Joins/Team/Skill/Domain, column-level grants on Users/Project/Task (`db/007_rbac.sql`) |

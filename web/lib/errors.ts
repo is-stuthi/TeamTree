@@ -29,6 +29,14 @@ const MESSAGES: Record<string, string> = {
   APP_NOT_PENDING: "This application has already been decided or withdrawn.",
   NOT_APPLICANT: "Only the applicant can withdraw this application.",
   PROJECT_NOT_ACCEPTING: "Members can only be added while the project is Open or Ongoing.",
+  PROJECT_FINISHED: "Completed or closed projects can't get new tasks.",
+  CAPACITY_BELOW_TEAM: "The team already has more members than that limit.",
+  DEADLINE_BEFORE_TASKS: "Some unfinished tasks are due after that deadline. Move them first.",
+  PARENT_OTHER_PROJECT: "A subtask must belong to the same project as its parent.",
+  NOT_ACTIVE_MEMBER: "That person isn't an active member of this team.",
+  OWNER_CANNOT_LEAVE: "Transfer ownership before leaving the team.",
+  RETRY: "The database was busy. Please try again.",
+  API_UNAVAILABLE: "The server is unreachable. Please try again shortly.",
   VALIDATION: "Please check the highlighted fields.",
 };
 

@@ -1,0 +1,12 @@
+{
+  "title": "Overview",
+  "grid": { "cols": 3 },
+  "widgets": [
+    { "type": "stat", "title": "Tasks assigned to me", "source": "/users/me/tasks", "agg": "count" },
+    { "type": "stat", "title": "Tasks done", "source": "/users/me/tasks", "agg": "count_where", "field": "status", "equals": "Done" },
+    { "type": "stat", "title": "Teams I'm on", "source": "/users/me/teams", "agg": "count" },
+    { "type": "table", "title": "Recent activity", "help": "Q12: UNION ALL of applications, team changes and tasks",
+      "source": "/users/me/activity", "span": 3,
+      "columns": [{ "key": "at", "label": "When" }, { "key": "kind", "label": "Type" }, { "key": "what", "label": "What" }] }
+  ]
+}

@@ -16,19 +16,20 @@ export function buildQuery(values: FormValues): string {
   return qs.toString();
 }
 
-/** Fill {placeholders} in spec.submit.path from params/values; path fields leave the body. */
+/** Fill {placeholders} in spec.submit.path from params/values; path fields leave the body.
+ *  For PATCH, a cleared field is sent as null so the API clears it (omitting it would
+ *  mean "unchanged"). For other methods empty fields are simply left out. */
 export function buildRequest(spec: UiSpec, values: FormValues, opts: RequestOptions = {}) {
   const used = new Set<string>();
   const path = spec.submit.path.replace(/\{(\w+)\}/g, (_, key: string) => {
     used.add(key);
     return encodeURIComponent(String(opts.params?.[key] ?? values[key] ?? ""));
   });
+  const method = opts.method ?? spec.submit.method;
   const body = Object.fromEntries(
-    Object.entries(values).filter(([k, v]) => !used.has(k) && v !== undefined),
+    Object.entries(values)
+      .filter(([k, v]) => !used.has(k) && (v !== undefined || method === "PATCH"))
+      .map(([k, v]) => [k, v === undefined ? null : v]),
   );
-  return {
-    url: opts.action ?? `/api/proxy${path}`,
-    method: opts.method ?? spec.submit.method,
-    body,
-  };
+  return { url: opts.action ?? `/api/proxy${path}`, method, body };
 }

@@ -14,7 +14,7 @@ LISTING = """SELECT * FROM ProjectListing pl
 DETAIL = """SELECT p.p_id, p.p_name, p.description, p.deadline, p.status, p.max_team_size,
        p.creation_date, p.owner_id, CONCAT(u.f_name, ' ', u.l_name) AS owner_name,
        u.bio AS owner_bio, t.team_name, COUNT(DISTINCT j.j_id) AS team_size,
-       GROUP_CONCAT(DISTINCT d.d_name ORDER BY d.d_name SEPARATOR ',') AS domains,
+       GROUP_CONCAT(DISTINCT d.d_name ORDER BY d.d_name SEPARATOR '\\n') AS domains,
        (p.deadline IS NOT NULL AND p.deadline < CURDATE() AND p.status IN ('Open','Ongoing')) AS is_overdue
   FROM Project p
   JOIN Users u      ON u.id = p.owner_id
@@ -34,16 +34,10 @@ VIEWER = """SELECT fn_is_active_member(%(p)s, %(u)s) AS is_member,
 
 OWNER = "SELECT owner_id FROM Project WHERE p_id = %s"
 
-INSERT_DOMAINS = "INSERT INTO Domain (project_id, d_name) VALUES (%s, %s)"
-DELETE_DOMAINS = "DELETE FROM Domain WHERE project_id = %s"
-
-# Columns tt_app may UPDATE on Project (column-level GRANT in db/007_rbac.sql)
+# Columns tt_app may UPDATE on Project (column-level GRANT in db/007_rbac.sql).
+# Closing goes through close_project (D3 lives there); domains through set_project_domains.
 PATCH_COLUMNS = ("p_name", "description", "deadline", "status", "max_team_size")
-
-# D3 [UPDATE ... JOIN] closing a project blocks its unfinished tasks
-BLOCK_TASKS_ON_CLOSE = """UPDATE Task t JOIN Project p ON p.p_id = t.p_id
-   SET t.status = 'Blocked'
- WHERE p.p_id = %s AND p.status = 'Closed' AND t.status IN ('To Do', 'In Progress')"""
+NOT_NULL_COLUMNS = {"p_name", "status"}      # a cleared field is ignored rather than nulled
 
 
 def patch(fields: list[str]) -> str:
@@ -52,5 +46,5 @@ def patch(fields: list[str]) -> str:
 
 
 def split_csv(row: dict, *keys: str) -> dict:
-    """GROUP_CONCAT columns -> lists."""
-    return {**row, **{k: (row.get(k) or "").split(",") if row.get(k) else [] for k in keys}}
+    """GROUP_CONCAT columns (newline-separated: names may contain commas) -> lists."""
+    return {**row, **{k: row[k].split("\n") if row.get(k) else [] for k in keys}}

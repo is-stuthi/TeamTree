@@ -40,6 +40,11 @@ describe("buildRequest", () => {
     });
   });
 
+  it("sends cleared fields as null on PATCH so they can be cleared", () => {
+    const req = buildRequest({ ...registerSpec, submit: { method: "PATCH", path: "/users/me" } }, { f_name: "Z", bio: undefined });
+    expect(req.body).toEqual({ f_name: "Z", bio: null });
+  });
+
   it("turns search-form values into a query string, skipping empties", () => {
     expect(buildQuery({ q: "web", skill: 16, status: undefined, domain: "", tags: [] })).toBe("q=web&skill=16");
   });

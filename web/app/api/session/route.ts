@@ -5,12 +5,18 @@ import { SESSION_COOKIE, SESSION_MAX_AGE } from "@/lib/session";
 
 export async function POST(req: NextRequest) {
   const mode = req.nextUrl.searchParams.get("mode") === "register" ? "register" : "login";
-  const upstream = await fetch(`${process.env.API_URL}/auth/${mode}`, {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: await req.text(),
-  });
-  const data = await upstream.json();
+  let upstream: Response;
+  try {
+    upstream = await fetch(`${process.env.API_URL}/auth/${mode}`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: await req.text(),
+    });
+  } catch {
+    return NextResponse.json({ code: "API_UNAVAILABLE", message: "The server is unreachable." }, { status: 502 });
+  }
+  // Non-JSON upstream errors (proxy pages, crashes) must not crash this handler.
+  const data = await upstream.json().catch(() => ({ code: "UPSTREAM_ERROR", message: `Server error (${upstream.status})` }));
   if (!upstream.ok) return NextResponse.json(data, { status: upstream.status });
 
   const res = NextResponse.json({ user: data.user }, { status: upstream.status });

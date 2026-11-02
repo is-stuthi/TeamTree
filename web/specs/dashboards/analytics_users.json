@@ -1,0 +1,21 @@
+{
+  "title": "Users",
+  "description": "Activity counts, labelled as activity: creating many projects does not make someone a better collaborator.",
+  "grid": { "cols": 3 },
+  "widgets": [
+    { "type": "bars", "title": "Most active: applications and teams", "source": "/analytics/users", "path": "most_active",
+      "label": "name", "series": [
+        { "key": "applications_submitted", "label": "Applications submitted" },
+        { "key": "teams_joined", "label": "Teams joined" }
+      ], "span": 3 },
+    { "type": "table", "title": "Activity per user", "source": "/analytics/users", "path": "most_active", "span": 3,
+      "columns": [
+        { "key": "name", "label": "User" },
+        { "key": "projects_created", "label": "Projects created", "align": "right" },
+        { "key": "applications_submitted", "label": "Applications", "align": "right" },
+        { "key": "applications_accepted", "label": "Accepted", "align": "right" },
+        { "key": "teams_joined", "label": "Teams joined", "align": "right" },
+        { "key": "tasks_completed", "label": "Tasks done", "align": "right" }
+      ] }
+  ]
+}

@@ -2,20 +2,23 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { SectionNav } from "@/components/app/SectionNav";
 import { StatusBadge } from "@/components/app/StatusBadge";
-import { serverApi } from "@/lib/api/server";
+import { getProject } from "@/lib/api/server";
 
 // Owner-only area. middleware.ts requires login; this layout requires ownership,
 // and every owner action is re-checked by the API / stored procedures.
 export default async function ManageLayout({ children, params }: { children: React.ReactNode; params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const api = await serverApi();
-  const { data: p } = await api.GET("/projects/{p_id}", { params: { path: { p_id: Number(id) } } });
+  const p = Number.isInteger(Number(id)) ? await getProject(Number(id)) : null;
   if (!p) notFound();
   if (!p.viewer.is_owner) redirect(`/projects/${id}`);
 
   const base = `/projects/${id}/manage`;
   const tabs = [
     { href: `${base}/applications`, label: "Applications" },
+    { href: `${base}/candidates`, label: "Candidates" },
+    { href: `${base}/gap`, label: "Skill gap" },
+    { href: `${base}/team`, label: "Team" },
+    { href: `${base}/tasks`, label: "Tasks" },
     { href: `${base}/requirements`, label: "Requirements" },
     { href: base, label: "Settings" },
   ];

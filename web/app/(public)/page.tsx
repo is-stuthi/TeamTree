@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { SchemaDashboard } from "@/components/schema/SchemaDashboard";
+import { DASHBOARDS } from "@/specs/dashboards";
 
 const FEATURES = [
   { title: "Skills, not résumés", body: "Add skills with proficiency levels and get matched to projects that need them." },
@@ -8,7 +10,7 @@ const FEATURES = [
   { title: "See the network", body: "Explore collaborators, endorsements and similar projects through a graph." },
 ];
 
-export default function Landing() {
+export default async function Landing() {
   return (
     <main className="mx-auto max-w-5xl px-4 py-16 space-y-12">
       <section className="space-y-4 text-center">
@@ -19,6 +21,7 @@ export default function Landing() {
           <Link href="/projects" className={buttonVariants({ size: "lg", variant: "outline" })}>Browse projects</Link>
         </div>
       </section>
+      <SchemaDashboard spec={DASHBOARDS.public_stats} />
       <section className="grid gap-4 sm:grid-cols-3">
         {FEATURES.map((f) => (
           <Card key={f.title}>

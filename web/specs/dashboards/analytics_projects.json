@@ -1,0 +1,24 @@
+{
+  "title": "Projects",
+  "description": "Lifecycle, domains and deadlines (ProjectListing view; Q2 for projects with no applications).",
+  "grid": { "cols": 3 },
+  "widgets": [
+    { "type": "stat", "title": "Open projects", "source": "/analytics/projects", "path": "by_status.Open" },
+    { "type": "stat", "title": "Ongoing projects", "source": "/analytics/projects", "path": "by_status.Ongoing" },
+    { "type": "stat", "title": "Average duration (days)", "help": "Completed projects, creation to deadline",
+      "source": "/analytics/projects", "path": "avg_duration_days" },
+    { "type": "bars", "title": "Projects by status", "source": "/analytics/projects", "path": "by_status_rows",
+      "label": "status", "series": [{ "key": "projects", "label": "Projects" }] },
+    { "type": "bars", "title": "Projects by domain", "source": "/analytics/projects", "path": "by_domain",
+      "label": "domain", "series": [{ "key": "n", "label": "Projects" }], "span": 2 },
+    { "type": "table", "title": "Deadlines in the next 30 days", "source": "/analytics/projects",
+      "path": "approaching_deadlines", "span": 2,
+      "columns": [
+        { "key": "p_name", "label": "Project" }, { "key": "status", "label": "Status" },
+        { "key": "deadline", "label": "Deadline" }, { "key": "days_left", "label": "Days left", "align": "right" }
+      ] },
+    { "type": "table", "title": "No applications yet", "help": "Q2: LEFT JOIN + GROUP BY + HAVING",
+      "source": "/analytics/projects", "path": "no_applications",
+      "columns": [{ "key": "p_name", "label": "Project" }, { "key": "status", "label": "Status" }] }
+  ]
+}

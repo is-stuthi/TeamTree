@@ -1,0 +1,48 @@
+{
+  "title": "Skills",
+  "description": "Demand (projects requiring a skill) against supply (users who have it). TopInDemandSkills view: CTE + RANK().",
+  "grid": { "cols": 3 },
+  "widgets": [
+    {
+      "type": "bars",
+      "title": "Skill demand vs supply",
+      "help": "Projects requiring each skill, and users who have it.",
+      "source": "/analytics/skills",
+      "path": "demand",
+      "label": "s_name",
+      "series": [
+        { "key": "projects_requiring", "label": "Projects requiring" },
+        { "key": "users_possessing", "label": "Users with the skill" }
+      ],
+      "span": 2
+    },
+    {
+      "type": "table",
+      "title": "Top 3 per category",
+      "help": "ROW_NUMBER() OVER (PARTITION BY category)",
+      "source": "/analytics/skills",
+      "path": "top_by_category",
+      "columns": [
+        { "key": "category", "label": "Category" },
+        { "key": "rank_in_category", "label": "#", "align": "right" },
+        { "key": "s_name", "label": "Skill" },
+        { "key": "projects_requiring", "label": "Projects", "align": "right" }
+      ]
+    },
+    {
+      "type": "table",
+      "title": "Demand / supply detail",
+      "source": "/analytics/skills",
+      "path": "demand",
+      "span": 3,
+      "columns": [
+        { "key": "demand_rank", "label": "Rank", "align": "right" },
+        { "key": "s_name", "label": "Skill" },
+        { "key": "category", "label": "Category" },
+        { "key": "projects_requiring", "label": "Projects requiring", "align": "right" },
+        { "key": "users_possessing", "label": "Users with it", "align": "right" },
+        { "key": "demand_supply_ratio", "label": "Demand / supply", "align": "right" }
+      ]
+    }
+  ]
+}

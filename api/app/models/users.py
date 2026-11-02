@@ -27,6 +27,7 @@ class UserPublic(BaseModel):
     location: str | None = None
     experience_level: Level
     availability: Availability
+    strongest_skill: str | None = None
     skills: list["UserSkillOut"] = []
 
 

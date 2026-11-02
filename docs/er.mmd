@@ -1,0 +1,110 @@
+%% TeamTREE ER model (schema v2). Source of truth for docs/er.svg.
+%% Render: npx -y @mermaid-js/mermaid-cli -i docs/er.mmd -o docs/er.svg
+erDiagram
+    USERS ||--o{ PROJECT : "CREATES / OWNS"
+    USERS ||--o{ USER_HAS_SKILL : HAS
+    SKILL ||--o{ USER_HAS_SKILL : "is had by"
+    PROJECT ||--o{ REQUIRES : REQUIRES
+    SKILL ||--o{ REQUIRES : "is required by"
+    PROJECT ||--o{ DOMAIN : "has (multivalued)"
+    PROJECT ||--o| TEAM : HAS
+    TEAM ||--o{ JOINS : "has members"
+    USERS ||--o{ JOINS : JOINS
+    USERS ||--o{ APPLICATION : SUBMITS
+    PROJECT ||--o{ APPLICATION : RECEIVES
+    PROJECT ||--o{ TASK : CONTAINS
+    USERS |o--o{ TASK : "ASSIGNED_TO"
+    TASK |o--o{ TASK : "SUBTASK_OF"
+    PROJECT ||--o{ OWNERSHIP_TRANSFER : "is transferred"
+    USERS ||--o{ OWNERSHIP_TRANSFER : "from / to"
+
+    USERS {
+        int id PK
+        string f_name "composite name: f/m/l"
+        string m_name
+        string l_name
+        string email UK
+        string password_hash
+        enum role "admin | member"
+        text bio
+        string location
+        date dob "age is derived"
+        enum experience_level
+        enum availability
+        bool is_active "soft delete"
+        datetime created_at
+    }
+    SKILL {
+        int s_id PK
+        string s_name
+        string s_name_norm UK "generated LOWER(TRIM)"
+        string category
+    }
+    USER_HAS_SKILL {
+        int u_id PK, FK
+        int s_id PK, FK
+        enum u_s_level "relationship attribute"
+    }
+    PROJECT {
+        int p_id PK
+        int owner_id FK
+        string p_name
+        text description
+        date deadline "CHECK >= creation"
+        enum status "Open|Ongoing|Completed|Closed"
+        int max_team_size "capacity incl. owner"
+        datetime creation_date
+    }
+    DOMAIN {
+        int project_id PK, FK
+        string d_name PK
+    }
+    REQUIRES {
+        int p_id PK, FK
+        int s_id PK, FK
+        string req_role PK
+        enum p_s_level
+        int req_count "CHECK > 0"
+    }
+    TEAM {
+        int t_id PK
+        int p_id FK, UK "1:1 with project"
+        string team_name
+        datetime create_date
+    }
+    JOINS {
+        int j_id PK
+        int t_id FK
+        int u_id FK
+        string role
+        date join_date
+        date leave_date "history kept"
+        int active_flag "generated; UNIQUE(t_id,u_id,active_flag)"
+    }
+    APPLICATION {
+        int a_id PK
+        int applicant_id FK
+        int p_id FK
+        text msg
+        enum status "Pending|Accepted|Rejected|Withdrawn"
+        datetime a_date
+        datetime decision_date "REVIEWS attribute"
+        int pending_flag "generated; one Pending per pair"
+    }
+    TASK {
+        int task_id PK
+        int p_id FK
+        int u_id FK "nullable"
+        int parent_task_id FK "nullable"
+        string t_name
+        enum status
+        enum priority
+        date due_date
+    }
+    OWNERSHIP_TRANSFER {
+        int ot_id PK
+        int p_id FK
+        int from_user FK
+        int to_user FK
+        datetime transferred_at
+    }

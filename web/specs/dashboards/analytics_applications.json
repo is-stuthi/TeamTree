@@ -1,0 +1,25 @@
+{
+  "title": "Applications",
+  "description": "Acceptance rate = accepted / (accepted + rejected); pending and withdrawn are excluded from the denominator.",
+  "grid": { "cols": 3 },
+  "widgets": [
+    { "type": "stat", "title": "Acceptance rate", "help": "Decided applications only", "source": "/analytics/applications",
+      "path": "acceptance_rate", "format": "percent" },
+    { "type": "stat", "title": "Pending decisions", "source": "/analytics/applications", "path": "pending" },
+    { "type": "stat", "title": "Average decision time (days)", "source": "/analytics/applications", "path": "avg_decision_days" },
+    { "type": "line", "title": "Applications per day (last 30 days)", "help": "Q9: recursive CTE date series, gaps filled with 0",
+      "source": "/analytics/applications", "path": "timeline", "x": "day", "y": "applications",
+      "y_label": "applications", "span": 3 },
+    { "type": "table", "title": "Per project", "help": "ProjectApplicationSummary view + fn_acceptance_rate()",
+      "source": "/analytics/applications", "path": "per_project", "span": 3,
+      "columns": [
+        { "key": "p_name", "label": "Project" },
+        { "key": "total_applications", "label": "Total", "align": "right" },
+        { "key": "pending", "label": "Pending", "align": "right" },
+        { "key": "accepted", "label": "Accepted", "align": "right" },
+        { "key": "rejected", "label": "Rejected", "align": "right" },
+        { "key": "withdrawn", "label": "Withdrawn", "align": "right" },
+        { "key": "acceptance_rate", "label": "Acceptance rate", "align": "right" }
+      ] }
+  ]
+}

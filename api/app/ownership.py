@@ -17,3 +17,11 @@ async def project_owner(p_id: int) -> int:
 async def require_owner(p_id: int, user: CurrentUser) -> None:
     if await project_owner(p_id) != user.id:
         raise ApiError(403, "NOT_OWNER", "Only the project owner can do that")
+
+
+async def require_member(p_id: int, user: CurrentUser) -> None:
+    """Active team member (the owner is one) or an admin."""
+    await project_owner(p_id)                                  # 404 for unknown projects
+    row = await db.fetch_one("SELECT fn_is_active_member(%s, %s) AS m", (p_id, user.id))
+    if not row["m"] and not user.is_admin:
+        raise ApiError(403, "NOT_MEMBER", "Only team members can do that")

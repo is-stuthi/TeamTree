@@ -20,7 +20,8 @@ SELECT 8, src.s_id, src.req_role, src.p_s_level, src.req_count
 ON DUPLICATE KEY UPDATE p_s_level = src.p_s_level, req_count = src.req_count;
 
 -- D3 [UPDATE ... JOIN] closing a project blocks its unfinished tasks
--- used by: PATCH /projects/{p_id} with status=Closed
+-- used by: PATCH /projects/{p_id} with status=Closed -> CALL close_project (same UPDATE ... JOIN,
+--          inside one transaction that also rejects pending applications)
 UPDATE Project SET status = 'Closed' WHERE p_id = 3;
 UPDATE Task t JOIN Project p ON p.p_id = t.p_id
    SET t.status = 'Blocked'

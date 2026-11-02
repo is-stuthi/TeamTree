@@ -5,13 +5,25 @@ import { getSpec, serverApi } from "@/lib/api/server";
 
 export const metadata = { title: "Projects · TeamTREE" };
 
-type Status = "Open" | "Ongoing" | "Completed" | "Closed";
-type Search = { q?: string; domain?: string; skill?: string; status?: Status; deadline_before?: string };
+const STATUSES = ["Open", "Ongoing", "Completed", "Closed"] as const;
+type Search = { q?: string; domain?: string; skill?: string; status?: string; deadline_before?: string };
+
+// Bad URL params are dropped instead of turning into a 422 that renders as "no results".
+function cleanQuery(sp: Search) {
+  const skill = Number(sp.skill);
+  return {
+    q: sp.q || undefined,
+    domain: sp.domain || undefined,
+    skill: Number.isInteger(skill) && skill > 0 ? skill : undefined,
+    status: STATUSES.find((s) => s === sp.status),
+    deadline_before: /^\d{4}-\d{2}-\d{2}$/.test(sp.deadline_before ?? "") ? sp.deadline_before : undefined,
+  };
+}
 
 export default async function ProjectsPage({ searchParams }: { searchParams: Promise<Search> }) {
   const sp = await searchParams;
   const api = await serverApi();
-  const query = { ...sp, skill: sp.skill ? Number(sp.skill) : undefined };
+  const query = cleanQuery(sp);
   const [{ data: projects = [] }, filterSpec] = await Promise.all([
     api.GET("/projects", { params: { query } }), getSpec("project_filter"),
   ]);
