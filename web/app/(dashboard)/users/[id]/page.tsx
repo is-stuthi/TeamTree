@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { EndorsementList } from "@/components/app/EndorsementList";
+import { GraphUnavailable } from "@/components/app/GraphUnavailable";
 import { SpecDialog } from "@/components/app/SpecDialog";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,7 +13,7 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
   if (!me) redirect(`/login?next=/users/${uid}`);
   const api = await serverApi();
   const self = me.id === uid;
-  const [{ data: user }, { data: endorsements = [] }, { data: similar = [] }, path, endorseSpec] = await Promise.all([
+  const [{ data: user }, { data: endorsements = [], error: graphDown }, { data: similar = [] }, path, endorseSpec] = await Promise.all([
     api.GET("/users/{user_id}", { params: { path: { user_id: uid } } }),
     api.GET("/graph/users/{uid}/endorsements", { params: { path: { uid } } }),
     api.GET("/graph/users/{uid}/similar", { params: { path: { uid } } }),
@@ -35,6 +36,7 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
         {!self && <SpecDialog spec={endorseSpec} trigger="Endorse" params={{ to: uid }} defaultValues={{ to: uid }}
                               description="Only people you've shared a team with can be endorsed." />}
       </div>
+      {graphDown && <GraphUnavailable what="Endorsements, connections and similar people" />}
       <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
         <div className="space-y-6">
           {user.bio && <Card><CardContent className="pt-6 text-sm">{user.bio}</CardContent></Card>}

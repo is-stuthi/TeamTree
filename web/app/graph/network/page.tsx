@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { GraphUnavailable } from "@/components/app/GraphUnavailable";
 import { NetworkGraph } from "@/components/graph/NetworkGraph";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,11 +12,11 @@ export default async function NetworkPage() {
   const me = await getMe();
   if (!me) redirect("/login?next=/graph/network");
   const api = await serverApi();
-  const [{ data: network, error }, { data: recs = [] }] = await Promise.all([
+  const [{ data: network }, { data: recs = [] }] = await Promise.all([
     api.GET("/graph/users/{uid}/network", { params: { path: { uid: me.id }, query: { depth: 2 } } }),
     api.GET("/graph/users/{uid}/recommended-collaborators", { params: { path: { uid: me.id } } }),
   ]);
-  if (!network) return <p className="text-muted-foreground text-sm">The graph is unavailable right now ({JSON.stringify(error)}).</p>;
+  if (!network) return <GraphUnavailable what="Your network and recommendations" />;
   const people = network.nodes.filter((n) => n.degree > 0);
 
   return (

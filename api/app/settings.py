@@ -26,6 +26,7 @@ class Settings(BaseSettings):
     jwt_secret: str = "dev-only-insecure-secret-change-me-please"
     jwt_ttl_minutes: int = 720
     web_origin: str = "http://localhost:3000"
+    app_env: str = "development"      # "production" disables /admin/dev/*
 
 
 @lru_cache
