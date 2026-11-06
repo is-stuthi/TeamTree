@@ -17,22 +17,29 @@ DBMS Level-3 mini project (PES University). Every rubric row maps to concrete ev
 
 ## Quick start
 
-Prerequisites: Docker Desktop, Python 3.11+, Node 20+.
+Prerequisites: Docker, Python 3.11–3.12, Node 20+. Paths below are for macOS/Linux; on Windows
+use `.venv\Scripts\` instead of `.venv/bin/`.
 
 ```bash
-cp .env.example .env                 # then change the passwords
-docker compose up -d db graph        # MySQL on $MYSQL_PORT (default 3306), Neo4j 7474/7687
+cp .env.example .env                 # change the passwords; set MYSQL_PORT=3307 if 3306 is taken
+docker compose up -d db graph        # MySQL on $MYSQL_PORT, Neo4j 7474/7687 (wait for "healthy")
 
 cd api
-python -m venv .venv && .venv/Scripts/pip install -e ".[dev,graph]"   # (bin/pip on macOS/Linux)
-.venv/Scripts/python scripts/migrate.py              # schema, functions, triggers, procedures, views, indexes, roles, seed
-.venv/Scripts/python scripts/sync_graph.py --full    # Neo4j constraints, vector indexes, projection + graph seed
-.venv/Scripts/python -m uvicorn app.main:app --reload    # http://localhost:8000/docs
+python -m venv .venv
+.venv/bin/pip install torch --index-url https://download.pytorch.org/whl/cpu   # optional: CPU-only torch, much smaller
+.venv/bin/pip install -e ".[dev,graph]"
+.venv/bin/python scripts/migrate.py              # schema, functions, triggers, procedures, views, indexes, roles, seed
+.venv/bin/python scripts/sync_graph.py --full    # Neo4j constraints, vector indexes, projection + graph seed
+.venv/bin/python -m uvicorn app.main:app --reload    # http://localhost:8000/docs  (leave running)
 
-cd ../web
+# in a second terminal
+cd web
 cp .env.example .env.local           # JWT_SECRET must equal the one in ../.env
-npm install && npm run dev           # http://localhost:3000
+npm ci && npm run dev                # http://localhost:3000
 ```
+
+Admins can reload the demo data at any time from **Admin → Users & roles → Reset seed data**
+(development only: disabled when `APP_ENV=production` and hidden in production builds).
 
 ### Demo accounts (password `password123`)
 
@@ -56,6 +63,17 @@ npm install && npm run dev           # http://localhost:3000
 - **Analytics:** skills demand vs supply, projects, applications (acceptance rate excludes pending and withdrawn), users and teams (admin).
 - **Security in three layers:** Next.js middleware, FastAPI role checks, and **MySQL roles and grants**. The app's DB user cannot write applications or memberships except through stored procedures.
 
+## Screenshots
+
+| | |
+|---|---|
+| ![Browse projects](docs/screenshots/02-browse-projects.png) **Browse & filter projects** | ![Review applications](docs/screenshots/04-applications-review.png) **Owner reviews applications** |
+| ![Candidates](docs/screenshots/05-candidates.png) **Weighted candidate scores** | ![Skill gap](docs/screenshots/06-skill-gap.png) **Skill-gap dashboard** |
+| ![Task tree](docs/screenshots/07-task-tree.png) **Subtask tree (recursive CTE)** | ![Network](docs/screenshots/08-network-graph.png) **Neo4j collaboration network** |
+| ![Semantic search](docs/screenshots/09-semantic-search.png) **Vector search** | ![Analytics](docs/screenshots/10-analytics.png) **Analytics (views as `tt_report`)** |
+
+More in [`docs/screenshots/`](docs/screenshots/). Captured against the seed data.
+
 ## Where the DBMS work is
 
 | What | Where |
@@ -67,12 +85,12 @@ npm install && npm run dev           # http://localhost:3000
 | Query catalogue Q1–Q12 (join, nested, correlated, recursive, window, self-join, union) | [`db/queries/catalogue.sql`](db/queries/catalogue.sql) |
 | DML demo D1–D7 | [`db/queries/dml_demo.sql`](db/queries/dml_demo.sql) |
 | Neo4j creation / demo queries (R/U/D + vector) | [`graph/`](graph/) |
-| ER diagram / relational schema / tech choices | [`docs/er.svg`](docs/er.svg), [`docs/RELATIONAL_SCHEMA.md`](docs/RELATIONAL_SCHEMA.md), [`docs/TECH_JUSTIFICATION.md`](docs/TECH_JUSTIFICATION.md) |
+| ER diagram (Chen + crow's foot) / relational schema / tech choices | [`docs/ER Diagram.png`](docs/ER%20Diagram.png), [`docs/er.svg`](docs/er.svg), [`docs/RELATIONAL_SCHEMA.md`](docs/RELATIONAL_SCHEMA.md), [`docs/TECH_JUSTIFICATION.md`](docs/TECH_JUSTIFICATION.md) |
 
 ## Tests
 
 ```bash
-cd api && .venv/Scripts/python -m pytest -q      # business rules, RBAC, concurrency, graph, analytics
+cd api && .venv/bin/python -m pytest -q          # business rules, RBAC, concurrency, graph, analytics, Q1–Q12/D1–D7 smoke
 cd web && npm run lint && npm run typecheck && npm test && npm run build
 ```
 
