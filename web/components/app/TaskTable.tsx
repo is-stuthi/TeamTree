@@ -38,16 +38,15 @@ export function TaskTable({ tasks, members, showProject }: TaskTableProps) {
             {showProject && <TableCell className="text-muted-foreground">{t.p_name}</TableCell>}
             <TableCell className="w-40">
               <InlineSelect value={t.status} options={STATUSES} method="PATCH" path={`/tasks/${t.task_id}`}
-                            toBody={(status) => ({ status })} label={`Status of ${t.t_name}`}
-                            success={(s) => `“${t.t_name}” → ${s}`} />
+                            field="status" label={`Status of ${t.t_name}`}
+                            success={`“${t.t_name}” → {label}`} />
             </TableCell>
             <TableCell><Badge variant={PRIORITY[t.priority]}>{t.priority}</Badge></TableCell>
             <TableCell className="w-44">
               {members ? (
                 <InlineSelect value={t.u_id ? String(t.u_id) : "none"} options={assignees} method="POST"
                               path={`/tasks/${t.task_id}/assign`} label={`Assignee of ${t.t_name}`}
-                              toBody={(v) => ({ u_id: v === "none" ? null : Number(v) })}
-                              success={(name) => `Assigned to ${name}`} />
+                              field="u_id" kind="id" success="Assigned to {label}" />
               ) : (
                 <span className="text-muted-foreground">{t.assignee_name ?? "Unassigned"}</span>
               )}

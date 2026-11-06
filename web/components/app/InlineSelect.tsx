@@ -16,13 +16,21 @@ interface InlineSelectProps {
   options: InlineOption[];
   method: "PATCH" | "POST";
   path: string;                                   // API path via /api/proxy
-  toBody: (value: string) => unknown;
+  field: string;                                  // request body key: { [field]: value }
+  kind?: "text" | "id";                           // "id": numeric, and "none" sends null
   label: string;                                  // accessible name
-  success: (label: string) => string;
+  success: string;                                // toast; "{label}" = chosen option's label
+}
+
+// Props must stay serialisable: this client component is rendered from Server Components,
+// which cannot pass functions across the boundary.
+function toValue(v: string, kind: InlineSelectProps["kind"]) {
+  if (kind !== "id") return v;
+  return v === "none" ? null : Number(v);
 }
 
 /** A select that saves immediately (task status, assignee...) and refreshes. */
-export function InlineSelect({ value, options, method, path, toBody, label, success }: InlineSelectProps) {
+export function InlineSelect({ value, options, method, path, field, kind = "text", label, success }: InlineSelectProps) {
   const router = useRouter();
   const [pending, start] = useTransition();
 
@@ -32,9 +40,9 @@ export function InlineSelect({ value, options, method, path, toBody, label, succ
       const res = await fetch(`/api/proxy${path}`, {
         method,
         headers: { "content-type": "application/json" },
-        body: JSON.stringify(toBody(next)),
+        body: JSON.stringify({ [field]: toValue(next, kind) }),
       });
-      if (res.ok) toast.success(success(options.find((o) => o.value === next)?.label ?? next));
+      if (res.ok) toast.success(success.replace("{label}", options.find((o) => o.value === next)?.label ?? next));
       else toast.error(messageFor(await res.json().catch(() => null)));
       router.refresh();
     });

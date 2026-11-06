@@ -28,7 +28,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         <ProjectActions project={p} loggedIn={Boolean(session)} applySpec={applySpec} />
       </div>
       <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
-        <div className="space-y-6">
+        <div className="min-w-0 space-y-6">
           <Card>
             <CardHeader><CardTitle>About</CardTitle></CardHeader>
             <CardContent><p className="whitespace-pre-line text-sm">{p.description || "No description yet."}</p></CardContent>

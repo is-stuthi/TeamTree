@@ -9,16 +9,17 @@ export async function SiteHeader() {
   const name = me ? `${me.f_name} ${me.l_name}` : "";
   return (
     <header className="border-b">
-      <div className="mx-auto flex h-14 max-w-6xl items-center gap-6 px-4">
-        <Link href="/" className="font-semibold tracking-tight">TeamTREE</Link>
-        <nav className="flex items-center gap-4 text-sm text-muted-foreground">
+      <div className="mx-auto flex h-14 max-w-6xl items-center gap-3 px-4 sm:gap-6">
+        <Link href="/" className="shrink-0 font-semibold tracking-tight">TeamTREE</Link>
+        {/* scrolls sideways on phones so the user menu never leaves the screen */}
+        <nav className="flex min-w-0 items-center gap-3 overflow-x-auto whitespace-nowrap text-sm text-muted-foreground sm:gap-4">
           <Link href="/projects" className="hover:text-foreground">Projects</Link>
           {me && <Link href="/dashboard" className="hover:text-foreground">Dashboard</Link>}
           {me && <Link href="/graph/network" className="hover:text-foreground">Network</Link>}
           {me && <Link href="/analytics" className="hover:text-foreground">Analytics</Link>}
           {me?.role === "admin" && <Link href="/admin/skills" className="hover:text-foreground">Admin</Link>}
         </nav>
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ml-auto flex shrink-0 items-center gap-2">
           {me ? (
             <UserMenu name={name} role={me.role} />
           ) : (
