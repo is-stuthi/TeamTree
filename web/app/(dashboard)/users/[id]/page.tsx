@@ -24,7 +24,7 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
   const route = path?.data;
 
   return (
-    <main className="mx-auto max-w-6xl space-y-6 px-4 py-8">
+    <div className="mx-auto max-w-6xl space-y-6 px-4 py-8">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="space-y-1">
           <h1 className="text-3xl font-semibold tracking-tight">{user.name}</h1>
@@ -72,6 +72,6 @@ export default async function UserPage({ params }: { params: Promise<{ id: strin
           </Card>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

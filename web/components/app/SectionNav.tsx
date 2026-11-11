@@ -9,11 +9,11 @@ export interface NavItem {
   label: string;
 }
 
-/** Tab-style navigation for a section (dashboard, admin, project manage). */
+/** Segmented tab navigation for a section (dashboard, admin, project manage). */
 export function SectionNav({ items }: { items: NavItem[] }) {
   const pathname = usePathname();
   return (
-    <nav className="flex gap-1 overflow-x-auto border-b" aria-label="Section">
+    <nav className="no-scrollbar bg-muted/70 flex w-fit max-w-full gap-1 overflow-x-auto rounded-xl border p-1" aria-label="Section">
       {items.map((item) => {
         const active = pathname === item.href;
         return (
@@ -22,8 +22,8 @@ export function SectionNav({ items }: { items: NavItem[] }) {
             href={item.href}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "-mb-px border-b-2 px-3 py-2 text-sm whitespace-nowrap transition-colors",
-              active ? "border-primary text-foreground font-medium" : "border-transparent text-muted-foreground hover:text-foreground",
+              "rounded-lg px-3 py-1.5 text-sm font-medium whitespace-nowrap transition-all",
+              active ? "bg-background text-foreground shadow-sm ring-1 ring-border" : "text-muted-foreground hover:text-foreground",
             )}
           >
             {item.label}

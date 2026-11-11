@@ -24,16 +24,16 @@ export default async function ManageLayout({ children, params }: { children: Rea
   ];
 
   return (
-    <main className="mx-auto max-w-6xl space-y-6 px-4 py-8">
+    <div className="mx-auto max-w-6xl space-y-6 px-4 py-8">
       <div className="space-y-1">
-        <Link href={`/projects/${id}`} className="text-muted-foreground text-sm hover:underline">← Project page</Link>
+        <Link href={`/projects/${id}`} className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1 text-sm transition-colors">← Project page</Link>
         <div className="flex items-center gap-2">
-          <h1 className="text-2xl font-semibold tracking-tight">{p.p_name}</h1>
+          <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">{p.p_name}</h1>
           <StatusBadge status={p.status} />
         </div>
       </div>
       <SectionNav items={tabs} />
       {children}
-    </main>
+    </div>
   );
 }

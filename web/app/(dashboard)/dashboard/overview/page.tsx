@@ -1,8 +1,6 @@
-import { SchemaDashboard } from "@/components/schema/SchemaDashboard";
-import { DASHBOARDS } from "@/specs/dashboards";
+import { redirect } from "next/navigation";
 
-export const metadata = { title: "Overview · TeamTREE" };
-
-export default async function OverviewPage() {
-  return <SchemaDashboard spec={DASHBOARDS.my_dashboard} />;
+// Overview now lives at /dashboard; keep the old URL working.
+export default function OverviewRedirect() {
+  redirect("/dashboard");
 }

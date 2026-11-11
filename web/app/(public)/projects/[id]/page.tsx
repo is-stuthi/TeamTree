@@ -18,7 +18,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
   const capacity = p.max_team_size ? `${p.team_size} / ${p.max_team_size}` : `${p.team_size} (no limit)`;
 
   return (
-    <main className="mx-auto max-w-6xl space-y-6 px-4 py-8">
+    <div className="mx-auto max-w-6xl space-y-6 px-4 py-8">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="space-y-2">
           <div className="flex items-center gap-2"><StatusBadge status={p.status} /><OverdueBadge overdue={p.is_overdue} /></div>
@@ -54,7 +54,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
         <SimilarProjects projectId={p.p_id} />
         </div>
       </div>
-    </main>
+    </div>
   );
 }
 

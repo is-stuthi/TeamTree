@@ -31,7 +31,7 @@ export function UserMenu({ name, role }: { name: string; role: AppRole }) {
           <Badge variant={role === "admin" ? "default" : "secondary"}>{role}</Badge>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => router.push("/dashboard")}>Profile</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => router.push("/dashboard/profile")}>Profile</DropdownMenuItem>
         <DropdownMenuItem onClick={() => router.push("/dashboard/skills")}>My skills</DropdownMenuItem>
         {role === "admin" && <DropdownMenuItem onClick={() => router.push("/admin/skills")}>Admin</DropdownMenuItem>}
         <DropdownMenuSeparator />
