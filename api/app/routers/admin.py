@@ -1,15 +1,17 @@
 """Admin-only endpoints. Enforced twice: require_admin here, and fn_is_admin
-inside the procedures (create_skill, update_skill, set_user_role, deactivate_user)."""
+inside the procedures (create_skill, update_skill, set_user_role, deactivate_user).
+/admin/dev/* is additionally refused unless APP_ENV=development."""
 from fastapi import APIRouter, Depends
 
 from app import db
 from app.auth import CurrentUser, require_admin
 from app.errors import ApiError
 from app.graph import sync
-from app.models.admin import AdminUserOut, RoleChange
+from app.models.admin import AdminUserOut, DevResetOut, RoleChange
 from app.models.skills import SkillCreate, SkillOut, SkillPatch
 from app.queries import admin as q
 from app.queries import skills as skill_q
+from app.settings import get_settings
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
@@ -44,6 +46,15 @@ async def deactivate(user_id: int, admin: CurrentUser = Depends(require_admin)):
     await db.call_proc("deactivate_user", admin.id, user_id)
     await sync.delete_user(user_id)
     return await _user(user_id)
+
+
+@router.post("/dev/reset", response_model=DevResetOut)
+async def dev_reset(_: CurrentUser = Depends(require_admin)):
+    """Reload the demo seed (MySQL + graph). Development only."""
+    if get_settings().app_env != "development":
+        raise ApiError(403, "DEV_ONLY", "Seed reset is disabled outside development")
+    from app import devtools   # imports the migration scripts; only needed here
+    return await devtools.reset_seed()
 
 
 async def _user(user_id: int) -> dict:

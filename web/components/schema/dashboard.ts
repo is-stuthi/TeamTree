@@ -26,9 +26,20 @@ export interface MetersWidget extends WidgetBase {
   max: string;
 }
 
+export type Tone = "success" | "info" | "warning" | "danger" | "neutral";
+
+export interface TableColumn {
+  key: string;
+  label: string;
+  align?: "right";
+  /** date: readable date chip with relative day; badge: value as a pill (tone via `tones`). */
+  format?: "date" | "badge";
+  tones?: Record<string, Tone>;
+}
+
 export interface TableWidget extends WidgetBase {
   type: "table";
-  columns: { key: string; label: string; align?: "right" }[];
+  columns: TableColumn[];
 }
 
 /** Horizontal ranked bars; 1 series (single hue) or 2 series (categorical slots 1-2 + legend). */

@@ -13,7 +13,12 @@ _driver: AsyncDriver | None = None
 async def init_driver() -> None:
     global _driver
     s = get_settings()
-    _driver = AsyncGraphDatabase.driver(s.neo4j_uri, auth=(s.neo4j_user, s.neo4j_password))
+    # Fail fast when Neo4j is down: the defaults retry for ~30 s per call, which
+    # stalls graph pages and every MySQL write that syncs afterwards.
+    _driver = AsyncGraphDatabase.driver(
+        s.neo4j_uri, auth=(s.neo4j_user, s.neo4j_password),
+        connection_timeout=3, connection_acquisition_timeout=5, max_transaction_retry_time=2,
+    )
 
 
 async def close_driver() -> None:

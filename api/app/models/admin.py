@@ -16,3 +16,8 @@ class AdminUserOut(BaseModel):
 
 class RoleChange(BaseModel):
     role: AppRole = Field(title="Role")
+
+
+class DevResetOut(BaseModel):
+    mysql: str
+    graph: str

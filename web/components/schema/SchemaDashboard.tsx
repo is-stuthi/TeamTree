@@ -31,9 +31,9 @@ export async function SchemaDashboard({ spec, params }: { spec: DashboardSpec; p
   return (
     <div className={cn("viz-root grid gap-4", COLS[spec.grid?.cols ?? 3])}>
       {spec.widgets.map((w, i) => (
-        <Card key={`${w.type}-${i}`} className={SPAN[w.span ?? 1]}>
+        <Card key={`${w.type}-${i}`} className={cn(SPAN[w.span ?? 1], "transition-shadow hover:shadow-md")}>
           <CardHeader>
-            <CardTitle className="text-base">{w.title}</CardTitle>
+            <CardTitle className={w.type === "stat" ? "text-muted-foreground text-sm font-medium" : "text-base font-semibold"}>{w.title}</CardTitle>
             {w.help && <CardDescription>{w.help}</CardDescription>}
           </CardHeader>
           <CardContent><WidgetBody spec={w} data={data[i]} /></CardContent>

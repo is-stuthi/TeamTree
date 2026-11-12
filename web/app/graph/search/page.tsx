@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { GraphUnavailable } from "@/components/app/GraphUnavailable";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { SchemaForm } from "@/components/schema/SchemaForm";
 import { getSpec, serverApi } from "@/lib/api/server";
@@ -27,7 +28,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
         <Card>
           <CardHeader><CardTitle>Results for “{q}”</CardTitle></CardHeader>
           <CardContent>
-            {results?.error ? <p className="text-muted-foreground text-sm">Search is unavailable right now.</p>
+            {results?.error ? <GraphUnavailable what="Semantic search results" />
               : rows.length === 0 ? <p className="text-muted-foreground text-sm">No open projects matched.</p> : (
               <ol className="space-y-2">
                 {rows.map((r, i) => (

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { SiteHeader } from "@/components/app/SiteHeader";
+import { AppShell } from "@/components/app/AppShell";
 import { Providers } from "./providers";
 import "./globals.css";
 
@@ -14,11 +14,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground min-h-dvh`}>
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
+      <body className="font-sans antialiased bg-background text-foreground min-h-dvh">
         <Providers>
-          <SiteHeader />
-          {children}
+          <AppShell>{children}</AppShell>
         </Providers>
       </body>
     </html>

@@ -296,6 +296,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admin/dev/reset": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Dev Reset
+         * @description Reload the demo seed (MySQL + graph). Development only.
+         */
+        post: operations["dev_reset_admin_dev_reset_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/ui-schemas": {
         parameters: {
             query?: never;
@@ -1259,6 +1279,13 @@ export interface components {
             decision: "Accepted" | "Rejected";
             /** Role in the team */
             role?: string | null;
+        };
+        /** DevResetOut */
+        DevResetOut: {
+            /** Mysql */
+            mysql: string;
+            /** Graph */
+            graph: string;
         };
         /** EndorseIn */
         EndorseIn: {
@@ -2832,6 +2859,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    dev_reset_admin_dev_reset_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DevResetOut"];
                 };
             };
         };

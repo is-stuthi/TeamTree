@@ -3,6 +3,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { SchemaForm } from "@/components/schema/SchemaForm";
 import { getSpec, serverApi } from "@/lib/api/server";
 import { ActionButton } from "./ActionButton";
+import { GraphUnavailable } from "./GraphUnavailable";
 
 /** Admin editor for curated RELATED_TO edges in Neo4j (graph-only data: create/update/delete). */
 export async function SkillRelations() {
@@ -15,7 +16,7 @@ export async function SkillRelations() {
         <CardDescription>Used for skill-gap suggestions. Saving an existing pair updates its strength.</CardDescription>
       </CardHeader>
       <CardContent className="grid gap-6 lg:grid-cols-[2fr_1fr]">
-        {error || !rels ? <p className="text-muted-foreground text-sm">The graph is unavailable right now.</p> : (
+        {error || !rels ? <GraphUnavailable what="Skill relations" /> : (
           <Table>
             <TableHeader><TableRow><TableHead>Skill</TableHead><TableHead>Related</TableHead><TableHead className="text-right">Strength</TableHead><TableHead /></TableRow></TableHeader>
             <TableBody>

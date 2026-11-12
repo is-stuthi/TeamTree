@@ -1,3 +1,4 @@
+import { PageHeader } from "@/components/app/PageHeader";
 import { ProjectCard, ProjectGrid } from "@/components/app/ProjectCard";
 import { Card, CardContent } from "@/components/ui/card";
 import { SchemaForm } from "@/components/schema/SchemaForm";
@@ -29,11 +30,8 @@ export default async function ProjectsPage({ searchParams }: { searchParams: Pro
   ]);
 
   return (
-    <main className="mx-auto max-w-6xl space-y-6 px-4 py-8">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Projects</h1>
-        <p className="text-muted-foreground text-sm">Open projects come first. Filter by skill to find where you fit.</p>
-      </div>
+    <div className="mx-auto max-w-6xl space-y-6 px-4 py-8">
+      <PageHeader eyebrow="Explore" title="Projects" description="Open projects come first. Filter by skill to find where you fit." />
       <Card>
         <CardContent className="[&_form]:grid-cols-1 [&_form]:sm:grid-cols-2 [&_form]:lg:grid-cols-5 [&_form]:items-end">
           <SchemaForm key={JSON.stringify(sp)} spec={filterSpec} defaultValues={sp} />
@@ -43,6 +41,6 @@ export default async function ProjectsPage({ searchParams }: { searchParams: Pro
       <ProjectGrid empty="No projects match these filters.">
         {projects.map((p) => <ProjectCard key={p.p_id} project={p} />)}
       </ProjectGrid>
-    </main>
+    </div>
   );
 }
