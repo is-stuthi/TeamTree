@@ -1,4 +1,4 @@
-"""Smoke test for every catalogue query (Q1-Q12 + browse/applicants) and DML demo
+"""Smoke test for every catalogue query (Q1-Q14 + browse/applicants) and DML demo
 (D1-D7), run straight from db/queries/*.sql so the viva files can't rot.
 
 Queries run as tt_app (the API's user); Q10 also as tt_report (views only).
@@ -12,11 +12,11 @@ D = blocks("dml_demo.sql")
 
 # Minimum row counts the seed guarantees (0 = must run, may legitimately be empty).
 MIN_ROWS = {"Q1": 1, "Q2": 1, "Q3": 1, "Q4": 0, "Q5": 0, "Q6": 1, "Q7": 10, "Q8": 3,
-            "Q9": 30, "Q10": 3, "Q11": 1, "Q12": 1, "Q-browse": 0, "Q-applicants": 1}
+            "Q9": 30, "Q10": 3, "Q11": 1, "Q12": 1, "Q13": 12, "Q14": 0, "Q-browse": 0, "Q-applicants": 1}
 
 
 def test_catalogue_is_complete():
-    assert {f"Q{i}" for i in range(1, 13)} <= Q.keys()
+    assert {f"Q{i}" for i in range(1, 15)} <= Q.keys()
     assert {f"D{i}" for i in range(1, 8)} == D.keys()
     assert set(MIN_ROWS) == set(Q)
 

@@ -1,16 +1,9 @@
 {
-  "title": "Overview",
+  "title": "Dashboard",
   "grid": { "cols": 3 },
   "widgets": [
-    { "type": "stat", "title": "Tasks assigned to me", "source": "/users/me/tasks", "agg": "count" },
-    { "type": "stat", "title": "Tasks done", "source": "/users/me/tasks", "agg": "count_where", "field": "status", "equals": "Done" },
-    { "type": "stat", "title": "Teams I'm on", "source": "/users/me/teams", "agg": "count" },
-    { "type": "table", "title": "Recent activity",
-      "source": "/users/me/activity", "span": 3,
-      "columns": [
-        { "key": "at", "label": "When", "format": "date" },
-        { "key": "kind", "label": "Type", "format": "badge", "tones": { "task": "info", "team": "success", "application": "warning" } },
-        { "key": "what", "label": "What" }
-      ] }
+    { "type": "stat", "title": "Tasks assigned to me", "icon": "tasks", "source": "/users/me/tasks", "agg": "count" },
+    { "type": "stat", "title": "Tasks done", "icon": "done", "source": "/users/me/tasks", "agg": "count_where", "field": "status", "equals": "Done" },
+    { "type": "stat", "title": "Teams I'm on", "icon": "teams", "source": "/users/me/teams", "agg": "count" }
   ]
 }

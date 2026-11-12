@@ -7,7 +7,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   if (!me) redirect("/login?next=/dashboard");
   return (
     <div className="mx-auto max-w-6xl space-y-6 px-4 py-8">
-      <SectionTitle descriptions={{ "/dashboard": `Welcome back, ${me.f_name}. Here's what's happening across your projects.` }} />
+      <SectionTitle titles={{ "/dashboard": `Welcome back, ${me.f_name}` }} descriptions={{ "/dashboard": "" }} />
       {children}
     </div>
   );

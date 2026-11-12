@@ -56,6 +56,17 @@ async def test_activity_feed_and_public_stats(client):
     assert stats == {"users": 14, "open_projects": 6, "teams": 10, "skills": 25, "people_matched": 11}
 
 
+async def test_my_insights(client):
+    h = await login(client, "alice@teamtree.dev")
+    body = (await client.get("/users/me/insights", headers=h)).json()
+    weeks = body["weekly_activity"]
+    assert len(weeks) == 12 and weeks == sorted(weeks, key=lambda w: w["week"])
+    assert all(isinstance(w["activity"], int) for w in weeks)
+    tasks = body["tasks_by_project"]
+    mine = (await client.get("/users/me/tasks", headers=h)).json()
+    assert sum(t["open_tasks"] + t["done_tasks"] for t in tasks) == len(mine)
+
+
 def test_report_user_cannot_read_base_tables(report_conn):
     assert sql_error(report_conn, "SELECT * FROM Application")[0] == 1142
     assert sql_error(report_conn, "SELECT * FROM Users")[0] == 1142

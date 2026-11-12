@@ -16,10 +16,11 @@ export interface SchemaFormProps extends Omit<SubmitOptions, "onDone"> {
   defaultValues?: FormValues;
   resetOnSuccess?: boolean;
   submitLabel?: string;
+  submitVariant?: "default" | "destructive";   // red submit for danger-zone forms
   onSuccess?: () => void;       // client wrappers only (e.g. close a dialog)
 }
 
-export function SchemaForm({ spec, defaultValues, resetOnSuccess, submitLabel, onSuccess, ...opts }: SchemaFormProps) {
+export function SchemaForm({ spec, defaultValues, resetOnSuccess, submitLabel, submitVariant, onSuccess, ...opts }: SchemaFormProps) {
   const formId = useId();
   const schema = formSchema(spec);
   const resolver = useMemo(() => zodResolver(buildZod(schema)), [schema]);
@@ -41,7 +42,7 @@ export function SchemaForm({ spec, defaultValues, resetOnSuccess, submitLabel, o
                        hint={fields[name] ?? {}} required={required.has(name)} control={form.control}
                        params={opts.params} />
       ))}
-      <Button type="submit" disabled={form.formState.isSubmitting} className="justify-self-start">
+      <Button type="submit" variant={submitVariant} disabled={form.formState.isSubmitting} className="justify-self-start">
         {form.formState.isSubmitting ? "Saving…" : submitLabel ?? spec.submit_label}
       </Button>
     </form>

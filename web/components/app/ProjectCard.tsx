@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import type { components } from "@/lib/api/schema";
+import { cn } from "@/lib/utils";
 import { OverdueBadge, StatusBadge } from "./StatusBadge";
 
 type Card_ = components["schemas"]["ProjectCard"];
@@ -37,7 +38,7 @@ export function ProjectCard({ project: p, note }: ProjectCardProps) {
   );
 }
 
-export function ProjectGrid({ children, empty }: { children: React.ReactNode[]; empty: string }) {
+export function ProjectGrid({ children, empty, className }: { children: React.ReactNode[]; empty: string; className?: string }) {
   if (children.length === 0) return <p className="text-muted-foreground text-sm">{empty}</p>;
-  return <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{children}</div>;
+  return <div className={cn("grid gap-4 sm:grid-cols-2 lg:grid-cols-3", className)}>{children}</div>;
 }

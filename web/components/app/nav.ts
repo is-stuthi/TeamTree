@@ -1,6 +1,6 @@
 import {
-  BarChart3, Compass, FolderKanban, Inbox, LayoutDashboard, ListChecks,
-  Network, Search, ShieldCheck, Sparkles, Tags, UserRound, Users, type LucideIcon,
+  BarChart3, Compass, History, FolderKanban, Inbox, LayoutDashboard, ListChecks,
+  Network, ShieldCheck, Sparkles, Tags, UserRound, Users, type LucideIcon,
 } from "lucide-react";
 
 export interface NavLink {
@@ -23,10 +23,11 @@ export const NAV: NavGroup[] = [
   {
     label: "Workspace",
     items: [
-      { href: "/dashboard", label: "Overview", icon: LayoutDashboard, description: "Your activity across projects, teams and tasks." },
-      { href: "/dashboard/projects", label: "My projects", icon: FolderKanban, also: /^\/projects\/\d+\/manage/, description: "Projects you own or belong to." },
+      { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, also: /^\/graph\/search/, description: "Search, your numbers and projects picked for you." },
+      { href: "/dashboard/activity", label: "Activity", icon: History, description: "Everything you've done recently: applications, team changes and tasks." },
+      { href: "/dashboard/projects", label: "My projects", icon: FolderKanban, also: /^\/projects\/\d+\/manage/, description: "Projects you own and run." },
       { href: "/dashboard/applications", label: "Applications", icon: Inbox, description: "Applications you have sent to projects." },
-      { href: "/dashboard/teams", label: "Teams", icon: Users, description: "Teams you are a member of." },
+      { href: "/dashboard/teams", label: "Teams", icon: Users, description: "Every team you are on, including your own projects. Owners must transfer ownership before leaving." },
       { href: "/dashboard/tasks", label: "Tasks", icon: ListChecks, description: "Tasks assigned to you." },
     ],
   },
@@ -35,7 +36,6 @@ export const NAV: NavGroup[] = [
     items: [
       { href: "/projects", label: "Browse projects", icon: Compass, description: "Find open projects that need your skills." },
       { href: "/graph/network", label: "Network", icon: Network, description: "Your collaboration graph, powered by Neo4j." },
-      { href: "/graph/search", label: "Semantic search", icon: Search, description: "Search projects and people by meaning, not keywords." },
       { href: "/analytics", label: "Analytics", icon: BarChart3, description: "Every number comes from a SQL view or query." },
     ],
   },

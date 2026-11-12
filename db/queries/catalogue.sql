@@ -213,3 +213,33 @@ SELECT * FROM (
     SELECT tk.created_at, 'task', CONCAT('Task: ', tk.t_name, ' (', tk.status, ')')
       FROM Task tk WHERE tk.u_id = @uid
 ) feed ORDER BY at DESC;
+
+-- ---------------------------------------------------------
+-- Q13 [RECURSIVE CTE: week series + UNION ALL] A user's activity per week, last 12 weeks, gaps filled with 0
+-- used by: GET /users/me/insights → weekly_activity   (BASE_ACTIVITY_WEEKLY), dashboard line chart
+-- ---------------------------------------------------------
+SET @uid = 7;
+WITH RECURSIVE weeks AS (
+    SELECT CURDATE() - INTERVAL WEEKDAY(CURDATE()) DAY - INTERVAL 11 WEEK AS w
+    UNION ALL SELECT w + INTERVAL 1 WEEK FROM weeks
+     WHERE w < CURDATE() - INTERVAL WEEKDAY(CURDATE()) DAY)
+SELECT CAST(weeks.w AS CHAR) AS week, COUNT(feed.at) AS activity
+  FROM weeks LEFT JOIN (
+    SELECT a.a_date AS at FROM Application a WHERE a.applicant_id = @uid
+    UNION ALL SELECT j.join_date FROM Joins j WHERE j.u_id = @uid
+    UNION ALL SELECT j.leave_date FROM Joins j WHERE j.u_id = @uid AND j.leave_date IS NOT NULL
+    UNION ALL SELECT tk.created_at FROM Task tk WHERE tk.u_id = @uid
+  ) feed ON feed.at >= weeks.w AND feed.at < weeks.w + INTERVAL 1 WEEK
+ GROUP BY weeks.w ORDER BY weeks.w;
+
+-- ---------------------------------------------------------
+-- Q14 [JOIN + GROUP BY + conditional COUNT] A user's tasks per project, open vs done
+-- used by: GET /users/me/insights → tasks_by_project   (BASE_TASKS_BY_PROJECT), dashboard bar chart
+-- ---------------------------------------------------------
+SET @uid = 7;
+SELECT p.p_name,
+       COUNT(CASE WHEN tk.status <> 'Done' THEN 1 END) AS open_tasks,
+       COUNT(CASE WHEN tk.status = 'Done' THEN 1 END) AS done_tasks
+  FROM Task tk JOIN Project p ON p.p_id = tk.p_id
+ WHERE tk.u_id = @uid
+ GROUP BY p.p_id, p.p_name ORDER BY COUNT(*) DESC, p.p_name LIMIT 8;

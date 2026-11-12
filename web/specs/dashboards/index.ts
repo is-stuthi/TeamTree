@@ -5,6 +5,8 @@ import projects from "./analytics_projects.json";
 import skills from "./analytics_skills.json";
 import teams from "./analytics_teams.json";
 import users from "./analytics_users.json";
+import myActivity from "./my_activity.json";
+import myCharts from "./my_charts.json";
 import myDashboard from "./my_dashboard.json";
 import publicStats from "./public_stats.json";
 import skillGap from "./skill_gap.json";
@@ -20,5 +22,7 @@ export const ANALYTICS_TABS: { key: string; label: string; spec: DashboardSpec; 
 export const DASHBOARDS = {
   public_stats: publicStats as DashboardSpec,
   my_dashboard: myDashboard as DashboardSpec,
+  my_activity: myActivity as DashboardSpec,
+  my_charts: myCharts as DashboardSpec,
   skill_gap: skillGap as DashboardSpec,
 };

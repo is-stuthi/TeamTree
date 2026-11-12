@@ -1,0 +1,13 @@
+{
+  "title": "My insights",
+  "grid": { "cols": 3 },
+  "widgets": [
+    { "type": "line", "title": "Your activity per week",
+      "help": "Applications, team changes and tasks over the last 12 weeks",
+      "source": "/users/me/insights", "path": "weekly_activity", "x": "week", "y": "activity",
+      "y_label": "events", "span": 2 },
+    { "type": "bars", "title": "Your tasks by project", "help": "Open vs done",
+      "source": "/users/me/insights", "path": "tasks_by_project", "label": "p_name",
+      "series": [{ "key": "open_tasks", "label": "Open" }, { "key": "done_tasks", "label": "Done" }] }
+  ]
+}

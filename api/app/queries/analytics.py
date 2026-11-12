@@ -74,8 +74,8 @@ PUBLIC_TOTALS = """SELECT (SELECT COUNT(*) FROM Users WHERE is_active) AS users,
        (SELECT COUNT(*) FROM Skill) AS skills,
        (SELECT COUNT(*) FROM Application WHERE status = 'Accepted') AS people_matched"""
 
-# Q12 [UNION ALL] the current user's activity feed
-BASE_ACTIVITY_FEED = """SELECT * FROM (
+# Q12 [UNION ALL] the current user's activity feed (also the event source for Q13)
+_FEED = """
     SELECT a.a_date AS at, 'application' AS kind, CONCAT('Applied to ', p.p_name, ' (', a.status, ')') AS what
       FROM Application a JOIN Project p ON p.p_id = a.p_id WHERE a.applicant_id = %(u)s
     UNION ALL
@@ -87,4 +87,22 @@ BASE_ACTIVITY_FEED = """SELECT * FROM (
     UNION ALL
     SELECT tk.created_at, 'task', CONCAT('Task: ', tk.t_name, ' (', tk.status, ')')
       FROM Task tk WHERE tk.u_id = %(u)s
-) feed ORDER BY at DESC LIMIT 15"""
+"""
+BASE_ACTIVITY_FEED = f"SELECT * FROM ({_FEED}) feed ORDER BY at DESC LIMIT 15"
+
+# Q13 [RECURSIVE CTE: week series + UNION ALL] the user's activity per week, last 12 weeks, gaps = 0
+BASE_ACTIVITY_WEEKLY = f"""WITH RECURSIVE weeks AS (
+    SELECT CURDATE() - INTERVAL WEEKDAY(CURDATE()) DAY - INTERVAL 11 WEEK AS w
+    UNION ALL SELECT w + INTERVAL 1 WEEK FROM weeks
+     WHERE w < CURDATE() - INTERVAL WEEKDAY(CURDATE()) DAY)
+SELECT CAST(weeks.w AS CHAR) AS week, COUNT(feed.at) AS activity
+  FROM weeks LEFT JOIN ({_FEED}) feed ON feed.at >= weeks.w AND feed.at < weeks.w + INTERVAL 1 WEEK
+ GROUP BY weeks.w ORDER BY weeks.w"""
+
+# Q14 [JOIN + GROUP BY + conditional COUNT] the user's tasks per project, open vs done
+BASE_TASKS_BY_PROJECT = """SELECT p.p_name,
+       COUNT(CASE WHEN tk.status <> 'Done' THEN 1 END) AS open_tasks,
+       COUNT(CASE WHEN tk.status = 'Done' THEN 1 END) AS done_tasks
+  FROM Task tk JOIN Project p ON p.p_id = tk.p_id
+ WHERE tk.u_id = %(u)s
+ GROUP BY p.p_id, p.p_name ORDER BY COUNT(*) DESC, p.p_name LIMIT 8"""

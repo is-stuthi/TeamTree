@@ -1,0 +1,13 @@
+{
+  "title": "Activity",
+  "grid": { "cols": 1 },
+  "widgets": [
+    { "type": "table", "title": "Recent activity",
+      "source": "/users/me/activity",
+      "columns": [
+        { "key": "at", "label": "When", "format": "date" },
+        { "key": "kind", "label": "Type", "format": "badge", "tones": { "task": "info", "team": "success", "application": "warning" } },
+        { "key": "what", "label": "What" }
+      ] }
+  ]
+}

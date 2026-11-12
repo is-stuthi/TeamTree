@@ -1,3 +1,4 @@
+import { TriangleAlert } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { SchemaForm } from "@/components/schema/SchemaForm";
 import { getSpec, serverApi } from "@/lib/api/server";
@@ -12,7 +13,7 @@ export default async function ProfilePage() {
   if (!me) return null;
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
+    <div className="space-y-8">
       <Card>
         <CardHeader>
           <CardTitle>{profileSpec.title}</CardTitle>
@@ -20,10 +21,19 @@ export default async function ProfilePage() {
         </CardHeader>
         <CardContent><SchemaForm spec={profileSpec} defaultValues={me} /></CardContent>
       </Card>
-      <Card className="self-start">
-        <CardHeader><CardTitle>{passwordSpec.title}</CardTitle></CardHeader>
-        <CardContent><SchemaForm spec={passwordSpec} resetOnSuccess /></CardContent>
-      </Card>
+
+      <section aria-labelledby="danger-zone" className="space-y-3">
+        <h2 id="danger-zone" className="text-destructive flex items-center gap-2 text-lg font-semibold">
+          <TriangleAlert className="size-5" aria-hidden /> Danger zone
+        </h2>
+        <Card className="border-destructive/50 bg-destructive/5 ring-destructive/30">
+          <CardHeader>
+            <CardTitle className="text-destructive">{passwordSpec.title}</CardTitle>
+            <CardDescription>You&apos;ll need your current password. Use the new one next time you log in.</CardDescription>
+          </CardHeader>
+          <CardContent className="max-w-md"><SchemaForm spec={passwordSpec} resetOnSuccess submitVariant="destructive" /></CardContent>
+        </Card>
+      </section>
     </div>
   );
 }

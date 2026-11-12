@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { ActionButton } from "@/components/app/ActionButton";
+import { RowActions } from "@/components/app/RowActions";
 import { StatusBadge } from "@/components/app/StatusBadge";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { serverApi } from "@/lib/api/server";
 
@@ -14,12 +14,8 @@ export default async function MyTeamsPage() {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>My teams</CardTitle>
-        <CardDescription>Owners must transfer ownership before leaving a team.</CardDescription>
-      </CardHeader>
       <CardContent>
-        {teams.length === 0 ? <p className="text-muted-foreground text-sm">You&apos;re not on any team yet.</p> : (
+        {teams.length === 0 ? <p className="text-muted-foreground text-sm">You&apos;re not on any team yet. Your dashboard lists projects that match your skills.</p> : (
           <Table>
             <TableHeader>
               <TableRow><TableHead>Project</TableHead><TableHead>Status</TableHead><TableHead>Role</TableHead><TableHead>Joined</TableHead><TableHead className="text-right">Size</TableHead><TableHead /></TableRow>
@@ -34,11 +30,15 @@ export default async function MyTeamsPage() {
                   <TableCell><Badge variant={t.is_owner ? "default" : "secondary"}>{t.role}</Badge></TableCell>
                   <TableCell>{t.join_date}</TableCell>
                   <TableCell className="text-right tabular-nums">{t.team_size}</TableCell>
-                  <TableCell className="text-right">
-                    {!t.is_owner && (
-                      <ActionButton label="Leave" method="POST" path={`/projects/${t.p_id}/team/leave`} success={`You left ${t.p_name}`}
-                                    confirm={`Leave ${t.p_name}? Your unfinished tasks become unassigned.`} />
-                    )}
+                  <TableCell className="w-10 text-right">
+                    <RowActions label={`Actions for ${t.p_name}`} actions={[
+                      { label: "Open project", icon: "open", href: `/projects/${t.p_id}` },
+                      ...(t.is_owner
+                        ? [{ label: "Manage team", icon: "manage" as const, href: `/projects/${t.p_id}/manage/team` }]
+                        : [{ label: "Leave team", icon: "leave" as const, destructive: true, method: "POST" as const,
+                             path: `/projects/${t.p_id}/team/leave`, success: `You left ${t.p_name}`,
+                             confirm: `You'll leave ${t.p_name}. Your unfinished tasks become unassigned, and you'd need to apply again to rejoin.` }]),
+                    ]} />
                   </TableCell>
                 </TableRow>
               ))}

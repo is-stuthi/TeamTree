@@ -15,7 +15,7 @@ export function LineWidget({ spec, data }: { spec: Spec; data: unknown }) {
   const total = rows.reduce((s, r) => s + (Number(r[spec.y]) || 0), 0);
 
   return (
-    <div style={{ height: 220 }} role="img" aria-label={`${spec.title}: ${total} ${spec.y_label} over ${rows.length} days`}>
+    <div style={{ height: 220 }} role="img" aria-label={`${spec.title}: ${total} ${spec.y_label} over ${rows.length} ${spec.x}s`}>
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={rows} margin={{ top: 8, right: 12, bottom: 0, left: 0 }}>
           <CartesianGrid vertical={false} stroke={GRID_STROKE} />

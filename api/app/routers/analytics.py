@@ -71,6 +71,14 @@ async def my_activity(user: CurrentUser = Depends(current_user)) -> list[dict[st
     return await db.fetch_all(q.BASE_ACTIVITY_FEED, {"u": user.id})
 
 
+@router.get("/users/me/insights")
+async def my_insights(user: CurrentUser = Depends(current_user)) -> dict[str, Any]:
+    """Dashboard charts: weekly activity (Q13) and tasks per project (Q14)."""
+    params = {"u": user.id}
+    return {"weekly_activity": await db.fetch_all(q.BASE_ACTIVITY_WEEKLY, params),
+            "tasks_by_project": await db.fetch_all(q.BASE_TASKS_BY_PROJECT, params)}
+
+
 @router.get("/public/stats")
 async def public_stats() -> dict[str, Any]:
     return await db.fetch_one(q.PUBLIC_TOTALS)

@@ -16,7 +16,10 @@ export interface StatWidget extends WidgetBase {
   equals?: string | number;
   format?: "number" | "percent";
   good_when?: "zero" | "positive";   // adds a status icon + label, never colour alone
+  icon?: StatIcon;                    // tile icon left of the number (see widget/StatWidget.tsx)
 }
+
+export type StatIcon = "tasks" | "done" | "teams" | "projects" | "applications" | "skills" | "users" | "chart";
 
 export interface MetersWidget extends WidgetBase {
   type: "meters";
