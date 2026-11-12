@@ -7,7 +7,7 @@
       "path": "acceptance_rate", "format": "percent" },
     { "type": "stat", "title": "Pending decisions", "source": "/analytics/applications", "path": "pending" },
     { "type": "stat", "title": "Average decision time (days)", "source": "/analytics/applications", "path": "avg_decision_days" },
-    { "type": "line", "title": "Applications per day (last 30 days)", "help": "Q9: recursive CTE date series, gaps filled with 0",
+    { "type": "line", "title": "Applications per day (last 30 days)",
       "source": "/analytics/applications", "path": "timeline", "x": "day", "y": "applications",
       "y_label": "applications", "span": 3 },
     { "type": "table", "title": "Per project", "help": "ProjectApplicationSummary view + fn_acceptance_rate()",

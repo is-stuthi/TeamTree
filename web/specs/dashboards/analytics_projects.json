@@ -17,7 +17,7 @@
         { "key": "p_name", "label": "Project" }, { "key": "status", "label": "Status", "format": "badge" },
         { "key": "deadline", "label": "Deadline" }, { "key": "days_left", "label": "Days left", "align": "right" }
       ] },
-    { "type": "table", "title": "No applications yet", "help": "Q2: LEFT JOIN + GROUP BY + HAVING",
+    { "type": "table", "title": "No applications yet",
       "source": "/analytics/projects", "path": "no_applications",
       "columns": [{ "key": "p_name", "label": "Project" }, { "key": "status", "label": "Status", "format": "badge" }] }
   ]
