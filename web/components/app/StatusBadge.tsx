@@ -1,12 +1,14 @@
 import { cn } from "@/lib/utils";
 
-type Tone = "success" | "info" | "warning" | "danger" | "neutral";
+import type { Tone } from "@/components/schema/dashboard";
 
 const TONE: Record<string, Tone> = {
   // project lifecycle
   Open: "success", Ongoing: "info", Completed: "neutral", Closed: "neutral",
   // application
   Pending: "warning", Accepted: "success", Rejected: "danger", Withdrawn: "neutral",
+  // task
+  Todo: "neutral", "In Progress": "info", Done: "success",
 };
 
 // Dot + label so meaning never relies on colour alone (dashboard-design §5).
@@ -18,7 +20,7 @@ const STYLE: Record<Tone, { pill: string; dot: string }> = {
   neutral: { pill: "bg-muted text-muted-foreground ring-border", dot: "bg-muted-foreground/60" },
 };
 
-function Pill({ tone, children }: { tone: Tone; children: React.ReactNode }) {
+export function Pill({ tone, children }: { tone: Tone; children: React.ReactNode }) {
   const s = STYLE[tone];
   return (
     <span className={cn("inline-flex h-6 shrink-0 items-center gap-1.5 rounded-full px-2.5 text-xs font-medium whitespace-nowrap ring-1 ring-inset", s.pill)}>

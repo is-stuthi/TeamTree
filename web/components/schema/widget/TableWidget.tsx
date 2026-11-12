@@ -1,6 +1,7 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { rowsOf, type TableWidget as Spec } from "../dashboard";
+import { CellValue } from "./CellValue";
 
 /** The table view: every chart has one, so no value is shown only as colour or length. */
 export function TableWidget({ spec, data }: { spec: Spec; data: unknown }) {
@@ -15,10 +16,10 @@ export function TableWidget({ spec, data }: { spec: Spec; data: unknown }) {
       </TableHeader>
       <TableBody>
         {rows.map((r, i) => (
-          <TableRow key={i}>
+          <TableRow key={i} className="hover:bg-muted/40">
             {spec.columns.map((c) => (
               <TableCell key={c.key} className={cn("tabular-nums", c.align === "right" && "text-right font-medium")}>
-                {r[c.key] == null ? "—" : String(r[c.key])}
+                <CellValue column={c} value={r[c.key]} />
               </TableCell>
             ))}
           </TableRow>
