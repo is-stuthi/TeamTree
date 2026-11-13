@@ -63,17 +63,6 @@ Admins can reload the demo data at any time from **Admin → Users & roles → R
 - **Analytics:** skills demand vs supply, projects, applications (acceptance rate excludes pending and withdrawn), users and teams (admin).
 - **Security in three layers:** Next.js middleware, FastAPI role checks, and **MySQL roles and grants**. The app's DB user cannot write applications or memberships except through stored procedures.
 
-## Screenshots
-
-| | |
-|---|---|
-| ![Browse projects](docs/screenshots/02-browse-projects.png) **Browse & filter projects** | ![Review applications](docs/screenshots/04-applications-review.png) **Owner reviews applications** |
-| ![Candidates](docs/screenshots/05-candidates.png) **Weighted candidate scores** | ![Skill gap](docs/screenshots/06-skill-gap.png) **Skill-gap dashboard** |
-| ![Task tree](docs/screenshots/07-task-tree.png) **Subtask tree (recursive CTE)** | ![Network](docs/screenshots/08-network-graph.png) **Neo4j collaboration network** |
-| ![Semantic search](docs/screenshots/09-semantic-search.png) **Vector search** | ![Analytics](docs/screenshots/10-analytics.png) **Analytics (views as `tt_report`)** |
-
-More in [`docs/screenshots/`](docs/screenshots/). Captured against the seed data.
-
 ## Where the DBMS work is
 
 | What | Where |
