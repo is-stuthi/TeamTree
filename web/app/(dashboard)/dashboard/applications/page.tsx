@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ActionButton } from "@/components/app/ActionButton";
+import { RowActions } from "@/components/app/RowActions";
 import { StatusBadge } from "@/components/app/StatusBadge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -36,11 +36,15 @@ export default async function MyApplicationsPage() {
                   <TableCell><StatusBadge status={a.status} /></TableCell>
                   <TableCell>{date(a.a_date)}</TableCell>
                   <TableCell>{date(a.decision_date)}</TableCell>
-                  <TableCell className="text-right">
-                    {a.status === "Pending" && (
-                      <ActionButton label="Withdraw" method="POST" success="Application withdrawn"
-                                    confirm={`Withdraw your application to ${a.p_name}?`} path={`/applications/${a.a_id}/withdraw`} />
-                    )}
+                  <TableCell className="w-10 text-right">
+                    <RowActions label={`Actions for ${a.p_name}`} actions={[
+                      { label: "Open project", icon: "open", href: `/projects/${a.p_id}` },
+                      ...(a.status === "Pending"
+                        ? [{ label: "Withdraw application", icon: "withdraw" as const, destructive: true, method: "POST" as const,
+                             path: `/applications/${a.a_id}/withdraw`, success: "Application withdrawn",
+                             confirm: `Your application to ${a.p_name} will be withdrawn. You can apply again later.` }]
+                        : []),
+                    ]} />
                   </TableCell>
                 </TableRow>
               ))}

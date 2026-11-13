@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { EllipsisVertical, ExternalLink, LogOut, Settings2, Trash2, type LucideIcon } from "lucide-react";
+import { EllipsisVertical, ExternalLink, LogOut, Settings2, Trash2, Undo2, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger,
@@ -11,7 +11,7 @@ import { ConfirmDialog } from "./ConfirmDialog";
 import { type ApiAction, useApiAction } from "./useApiAction";
 
 // Icons by name: server pages can't pass component functions to this client component.
-const ICONS = { open: ExternalLink, manage: Settings2, leave: LogOut, delete: Trash2 } satisfies Record<string, LucideIcon>;
+const ICONS = { open: ExternalLink, manage: Settings2, leave: LogOut, withdraw: Undo2, delete: Trash2 } satisfies Record<string, LucideIcon>;
 
 interface Base { label: string; icon?: keyof typeof ICONS }
 /** A menu item is either a link or an API call. Destructive calls are red, listed last, and always confirm. */
